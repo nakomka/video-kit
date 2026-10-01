@@ -1,0 +1,25 @@
+# Всё, что ставит установщик или создаёт работа: тяжёлое и личное, в репозиторий не идёт
+bin/
+models/
+cache/
+kit.json
+setup/env.sh
+setup/env.ps1
+setup/last-run.log
+
+# Ролики пользователей
+projects/*
+!projects/README.txt
+example/
+
+# Образцы — чужие ролики: ни видео, ни кадры из них не публикуем; разборы (ref.md) публикуем
+references/*/*.mp4
+references/*/*.mov
+references/*/storyboard*.jpg
+
+# Служебное
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+.claude/settings.local.json

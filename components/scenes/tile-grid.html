@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s5-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s5-title { position: absolute; left: 0; right: 0; top: 590px; text-align: center; font-size: 44px; font-weight: 700; color: var(--ink); }
+        #s5-grid { position: absolute; left: 60px; right: 60px; top: 680px; display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .s5-tile { height: 230px; padding: 28px 30px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 18px 50px rgba(0,0,0,0.12); border: 2px solid var(--line); }
+        .s5-num { width: 58px; height: 58px; border-radius: 50%; color: #fff; font-size: 32px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+        .s5-p .s5-num { background: var(--pink); }
+        .s5-g .s5-num { background: var(--green); }
+        .s5-name { font-size: 56px; font-weight: 850; letter-spacing: -0.02em; line-height: 1; }
+        .s5-desc { font-size: 30px; font-weight: 500; color: var(--muted); margin-top: 8px; }
+      </style>
+      <div id="s5-root" data-composition-id="s5" data-width="1080" data-height="1920">
+        <div id="s5-title">6 компонентов набора</div>
+        <div id="s5-grid">
+          <div class="s5-tile panel s5-p" id="s5-t1"><div class="s5-num">1</div><div><div class="s5-name">Whisper</div><div class="s5-desc">распознавание речи</div></div></div>
+          <div class="s5-tile panel s5-g" id="s5-t2"><div class="s5-num">2</div><div><div class="s5-name">Модель</div><div class="s5-desc">large-v3-turbo</div></div></div>
+          <div class="s5-tile panel s5-p" id="s5-t3"><div class="s5-num">3</div><div><div class="s5-name">FFmpeg</div><div class="s5-desc">рез и звук</div></div></div>
+          <div class="s5-tile panel s5-g" id="s5-t4"><div class="s5-num">4</div><div><div class="s5-name">Node.js</div><div class="s5-desc">среда для графики</div></div></div>
+          <div class="s5-tile panel s5-p" id="s5-t5"><div class="s5-num">5</div><div><div class="s5-name">Python</div><div class="s5-desc">скрипты монтажа</div></div></div>
+          <div class="s5-tile panel s5-g" id="s5-t6"><div class="s5-num">6</div><div><div class="s5-name">HyperFrames</div><div class="s5-desc">движок графики</div></div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 11.6333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s6In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s5-title", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.1);
+          ["t1", "t2", "t3", "t4", "t5", "t6"].forEach((k, i) => {
+            tl.fromTo("#s5-" + k, { autoAlpha: 0, y: 50, scale: 0.85 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.28, ease: "back.out(1.8)" }, L(k));
+          });
+          tl.to("#s5-grid, #s5-title", { autoAlpha: 0, y: 40, duration: 0.2, ease: "power2.in" }, END - 0.2);
+          window.__timelines["s5"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

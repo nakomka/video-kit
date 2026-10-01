@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s3-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s3-card { padding: 30px 48px 34px; display: flex; flex-direction: column; gap: 14px; min-width: 700px; }
+        .s3-row { display: flex; align-items: center; gap: 24px; font-size: 54px; font-weight: 750; letter-spacing: -0.01em; }
+        .s3-chk { width: 58px; height: 58px; flex: none; border-radius: 50%; background: var(--green);
+                  display: flex; align-items: center; justify-content: center; }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1080" data-height="1920">
+        <div class="topzone">
+          <div id="s3-card" class="panel">
+            <div class="label">внутри файла</div>
+            <div class="s3-row" id="s3-r1"><div class="s3-chk"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M6 18 L14 26 L28 9" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Инструкция для ИИ</div>
+            <div class="s3-row" id="s3-r2"><div class="s3-chk"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M6 18 L14 26 L28 9" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Установщики</div>
+            <div class="s3-row" id="s3-r3"><div class="s3-chk"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M6 18 L14 26 L28 9" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Промпты</div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 5.8667;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s3-card", { autoAlpha: 0, y: -40 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0);
+          ["c1", "c2", "c3"].forEach((k, i) => {
+            tl.fromTo("#s3-r" + (i + 1), { autoAlpha: 0, x: -50 }, { autoAlpha: 1, x: 0, duration: 0.28, ease: "back.out(1.8)" }, L(k));
+          });
+          window.__timelines["s3"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

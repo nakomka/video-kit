@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #fs1-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); overflow: hidden; }
+        #fs1-bg { background: var(--pink); }
+        #fs1-bg2 { background: #fcfbf8; }
+        #fs1-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; }
+        #fs1-pre { font-size: 64px; font-weight: 600; opacity: 0.9; }
+        #fs1-num { font-size: 460px; font-weight: 900; line-height: 0.95; letter-spacing: -0.05em; }
+        #fs1-dots { display: flex; gap: 26px; margin: 10px 0 30px; }
+        .fs1-dot { width: 44px; height: 44px; border-radius: 50%; background: #fff; }
+        #fs1-word-box { overflow: hidden; padding: 0 20px 10px; }
+        #fs1-word { font-size: 120px; font-weight: 850; letter-spacing: -0.03em; }
+      </style>
+      <div id="fs1-root" data-composition-id="fs1" data-width="1080" data-height="1920">
+        <div id="fs1-bg2" class="field"></div>
+        <div id="fs1-bg" class="field"></div>
+        <div id="fs1-wrap">
+          <div id="fs1-pre">Помимо этого —</div>
+          <div id="fs1-num">0</div>
+          <div id="fs1-dots">
+            <div class="fs1-dot"></div><div class="fs1-dot"></div><div class="fs1-dot"></div>
+            <div class="fs1-dot"></div><div class="fs1-dot"></div><div class="fs1-dot"></div>
+          </div>
+          <div id="fs1-word-box" data-layout-allow-overflow><div id="fs1-word">компонентов</div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 9.5667;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s5In - T0;
+          const tl = gsap.timeline({ paused: true });
+          // шторка снизу вверх: белая подложка, за ней розовое поле
+          tl.fromTo("#fs1-bg2", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.28, ease: "power3.inOut" }, 0);
+          tl.fromTo("#fs1-bg", { clipPath: "inset(100% 0 0 0)" }, { clipPath: "inset(0% 0 0 0)", duration: 0.32, ease: "power3.inOut" }, 0.06);
+          tl.fromTo("#fs1-pre", { autoAlpha: 0, y: 40 }, { autoAlpha: 0.9, y: 0, duration: 0.3, ease: "power3.out" }, 0.2);
+          const n = { v: 0 };
+          const num = document.querySelector("#fs1-num");
+          tl.fromTo("#fs1-num", { autoAlpha: 0, scale: 0.6 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, L("six") - 0.25);
+          tl.fromTo(n, { v: 0 }, { v: 6, duration: 0.45, ease: "power1.out", onUpdate: () => { num.textContent = Math.round(n.v); } }, L("six") - 0.2);
+          tl.fromTo(".fs1-dot", { scale: 0 }, { scale: 1, duration: 0.18, stagger: 0.07, ease: "back.out(2.5)" }, L("six") - 0.2);
+          tl.fromTo("#fs1-word", { yPercent: 110 }, { yPercent: 0, duration: 0.35, ease: "power3.out" }, L("comp"));
+          // уход: поле уезжает вверх и открывает раскладку s5
+          tl.to("#fs1-wrap", { autoAlpha: 0, y: -80, duration: 0.2, ease: "power2.in" }, END - 0.32);
+          tl.to("#fs1-bg", { clipPath: "inset(0 0 100% 0)", duration: 0.3, ease: "power3.inOut" }, END - 0.3);
+          tl.to("#fs1-bg2", { clipPath: "inset(0 0 100% 0)", duration: 0.3, ease: "power3.inOut" }, END - 0.26);
+          window.__timelines["fs1"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

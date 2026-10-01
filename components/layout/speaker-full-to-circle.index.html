@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #0a0a0a;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #0a0a0a;
+      }
+      /* поле за спикером-кругом (сцена s5) */
+      #bg-field {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        background:
+          radial-gradient(circle at 12% 8%, #ffd3e6 0, rgba(255, 211, 230, 0) 42%),
+          radial-gradient(circle at 92% 88%, #c9f0dc 0, rgba(201, 240, 220, 0) 45%),
+          #fcfbf8;
+      }
+      /* окно спикера: во весь кадр ↔ круг вверху */
+      #spk {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+      }
+      #spk-in {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+      }
+      #aroll {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="36.7" data-width="1080" data-height="1920">
+      <div id="bg-field"></div>
+      <div id="spk" data-layout-allow-overflow>
+        <div id="spk-in" data-layout-allow-overflow>
+          <video id="aroll" class="clip" src="assets/cut.mp4" data-start="0" data-duration="34.2" data-track-index="0" muted playsinline></video>
+        </div>
+      </div>
+      <audio id="voice" src="assets/voice.wav" data-start="0" data-duration="34.2" data-track-index="9" data-volume="1"></audio>
+
+      <div id="h-s1" data-clip="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0.0" data-duration="3.1" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s2" data-clip="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="3.1" data-duration="2.7667" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s3" data-clip="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="5.8667" data-duration="3.7" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s5" data-clip="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="11.6333" data-duration="5.6667" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s6" data-clip="s6" data-composition-id="s6" data-composition-src="compositions/s6.html" data-start="17.3" data-duration="7.1" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s7" data-clip="s7" data-composition-id="s7" data-composition-src="compositions/s7.html" data-start="24.4" data-duration="3.3333" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s9" data-clip="s9" data-composition-id="s9" data-composition-src="compositions/s9.html" data-start="31.8333" data-duration="4.8667" data-track-index="2" data-width="1080" data-height="1920"></div>
+
+      <div id="h-fs1" data-clip="fs1" data-composition-id="fs1" data-composition-src="compositions/fs1.html" data-start="9.5667" data-duration="2.0667" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="h-fs2" data-clip="fs2" data-composition-id="fs2" data-composition-src="compositions/fs2.html" data-start="27.7333" data-duration="4.1" data-track-index="3" data-width="1080" data-height="1920"></div>
+
+      <div id="h-captions" data-clip="captions" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0.0" data-duration="34.2" data-track-index="5" data-track-kind="captions" data-width="1080" data-height="1920"></div>
+    </div>
+    <script>
+      (() => {
+        /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 0.0;/*CUES:END*/
+        const tl = gsap.timeline({ paused: true });
+        // круг: диаметр 440, вверху по центру; в круг входят лицо, волосы и плечи
+        const D = 440, S = 0.6875, FX = 540, FY = 740;
+        const circle = { left: 320, top: 110, width: D, height: D, borderRadius: D / 2,
+                         boxShadow: "0 0 0 10px #ffffff, 0 28px 90px rgba(0,0,0,0.34)" };
+        const full = { left: 0, top: 0, width: 1080, height: 1920, borderRadius: 0,
+                       boxShadow: "0 0 0 0px #ffffff, 0 28px 90px rgba(0,0,0,0)" };
+        const inCircle = { x: D / 2 - FX * S, y: D / 2 - FY * S, scale: S, transformOrigin: "0 0" };
+        const inFull = { x: 0, y: 0, scale: 1, transformOrigin: "0 0" };
+
+        tl.fromTo("#spk", full, { ...full, duration: 0.01 }, 0);
+        tl.fromTo("#spk-in", inFull, { ...inFull, duration: 0.01 }, 0);
+        tl.fromTo("#bg-field", { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+        // s5: пока поле fs1 закрывает кадр, спикер уже сидит в круге — шторка открывает раскладку
+        tl.set("#spk", circle, C.s5In - 0.2);
+        tl.set("#spk-in", inCircle, C.s5In - 0.2);
+        tl.set("#bg-field", { opacity: 1 }, C.s5In - 0.2);
+        // s6: обратно во весь кадр
+        tl.to("#spk", { ...full, duration: 0.45, ease: "power3.inOut" }, C.s6In - 0.1);
+        tl.to("#spk-in", { ...inFull, duration: 0.45, ease: "power3.inOut" }, C.s6In - 0.1);
+        tl.to("#bg-field", { opacity: 0, duration: 0.2 }, C.s6In + 0.25);
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

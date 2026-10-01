@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s1-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s1-card { padding: 26px 56px 34px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+        #s1-name { font-size: 104px; font-weight: 850; letter-spacing: -0.03em; color: var(--pink); line-height: 1; }
+        #s1-stamp { padding: 14px 34px 18px; border: 6px solid var(--green); border-radius: 22px; background: var(--green-soft);
+                    color: var(--green); font-size: 54px; font-weight: 850; text-transform: uppercase; letter-spacing: 0.02em; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1080" data-height="1920">
+        <div class="topzone">
+          <div id="s1-card" class="panel">
+            <div class="label">смонтировано в</div>
+            <div id="s1-name">Claude Code</div>
+          </div>
+          <div id="s1-stamp">без моего участия</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 0.0;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s1-card", { autoAlpha: 0, y: -40, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, L("hitCC"));
+          tl.fromTo("#s1-stamp", { autoAlpha: 0, scale: 1.8, rotation: -14 }, { autoAlpha: 1, scale: 1, rotation: -5, duration: 0.25, ease: "back.out(2)" }, L("hitSolo"));
+          window.__timelines["s1"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s2-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s2-card { padding: 34px 46px; display: flex; align-items: center; gap: 36px; }
+        #s2-icon { width: 130px; height: 160px; flex: none; }
+        #s2-text { display: flex; flex-direction: column; gap: 4px; }
+        #s2-big { font-size: 96px; font-weight: 850; letter-spacing: -0.03em; color: var(--pink); line-height: 1; }
+        #s2-days { display: flex; gap: 10px; margin-top: 16px; }
+        .s2-d { width: 30px; height: 30px; border-radius: 9px; background: var(--line); }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1080" data-height="1920">
+        <div class="topzone">
+          <div id="s2-card" class="panel">
+            <svg id="s2-icon" viewBox="0 0 130 160">
+              <path d="M10 10 H86 L120 44 V150 H10 Z" fill="#ffe3ef" stroke="#ff3d8b" stroke-width="8" stroke-linejoin="round" />
+              <path d="M86 10 V44 H120" fill="none" stroke="#ff3d8b" stroke-width="8" stroke-linejoin="round" />
+              <path d="M32 78 H98 M32 102 H98 M32 126 H74" stroke="#ff3d8b" stroke-width="8" stroke-linecap="round" />
+            </svg>
+            <div id="s2-text">
+              <div class="label">мой файл · ушло</div>
+              <div id="s2-big"><span id="s2-num" style="display:inline-block">2</span> недели</div>
+              <div id="s2-days">
+                <div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div>
+                <div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div><div class="s2-d"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 3.1;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s2-card", { autoAlpha: 0, y: -40, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, L("hitFile"));
+          // «2» выпрыгивает на своём слове (счёт 0→2 давал «1 недели»), по дням заливаются 14 клеток
+          tl.fromTo("#s2-num", { scale: 0.3, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.3, ease: "back.out(2.5)" }, L("hitTwo"));
+          tl.fromTo(".s2-d", { backgroundColor: "rgba(20,22,26,0.10)" }, { backgroundColor: "#12a35f", duration: 0.05, stagger: 0.045 }, L("hitTwo"));
+          window.__timelines["s2"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

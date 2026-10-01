@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s9-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); overflow: hidden; }
+        #s9-card { position: relative; padding: 26px 44px 30px; display: flex; align-items: center; gap: 28px; font-size: 64px; font-weight: 800; }
+        #s9-gear { width: 96px; height: 96px; }
+        #s9-strike { position: absolute; left: 30px; right: 30px; top: 50%; height: 10px; margin-top: -5px; border-radius: 5px; background: var(--pink); transform-origin: left center; }
+        #s9-end-bg { background: var(--pink); }
+        #s9-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; color: #fff; text-align: center; }
+        #s9-end-t { font-size: 124px; font-weight: 900; letter-spacing: -0.04em; line-height: 1.02; padding: 0 70px; }
+        #s9-end-pill { padding: 18px 40px 24px; border-radius: 28px; background: #fcfbf8; color: var(--green); font-size: 56px; font-weight: 850; box-shadow: var(--shadow); }
+      </style>
+      <div id="s9-root" data-composition-id="s9" data-width="1080" data-height="1920">
+        <div class="topzone">
+          <div id="s9-card" class="panel">
+            <svg id="s9-gear" viewBox="0 0 100 100"><g fill="#12a35f"><circle cx="50" cy="50" r="30"/><rect x="43" y="4" width="14" height="22" rx="4"/><rect x="43" y="74" width="14" height="22" rx="4"/><rect x="4" y="43" width="22" height="14" rx="4"/><rect x="74" y="43" width="22" height="14" rx="4"/><rect x="43" y="4" width="14" height="22" rx="4" transform="rotate(45 50 50)"/><rect x="43" y="74" width="14" height="22" rx="4" transform="rotate(45 50 50)"/><rect x="4" y="43" width="22" height="14" rx="4" transform="rotate(45 50 50)"/><rect x="74" y="43" width="22" height="14" rx="4" transform="rotate(45 50 50)"/></g><circle cx="50" cy="50" r="12" fill="#fcfbf8"/></svg>
+            <span>Настройки</span>
+            <div id="s9-strike"></div>
+          </div>
+        </div>
+        <div id="s9-end-bg" class="field"></div>
+        <div id="s9-end">
+          <div id="s9-end-t">Забудьте про настройки</div>
+          <div id="s9-end-pill">Монтаж — Claude Code</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 31.8333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s9-card", { autoAlpha: 0, y: -40, scale: 0.9 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "back.out(1.8)" }, L("gear"));
+          tl.fromTo("#s9-gear", { rotation: -90 }, { rotation: 90, duration: 1.2, ease: "power2.out" }, L("gear"));
+          tl.fromTo("#s9-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: "power3.out" }, L("strike"));
+          tl.to("#s9-card", { autoAlpha: 0.0, duration: 0.2 }, L("endIn") + 0.1);
+          // финальная карточка: сразу после слова «навсегда», под дроп музыки
+          tl.fromTo("#s9-end-bg", { clipPath: "circle(0% at 50% 50%)" }, { clipPath: "circle(75% at 50% 50%)", duration: 0.45, ease: "power3.inOut" }, L("endIn") - 0.15);
+          tl.fromTo("#s9-end-t", { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "back.out(1.6)" }, L("endIn") + 0.15);
+          tl.fromTo("#s9-end-pill", { autoAlpha: 0, scale: 0.7 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(2)" }, L("endIn") + 0.45);
+          window.__timelines["s9"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s6-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s6-hdr { padding: 14px 34px 18px; font-size: 44px; font-weight: 750; }
+        #s6-hdr b { color: var(--pink); }
+        #s6-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 100%; }
+        .s6-pill { height: 108px; padding: 0 26px; display: flex; align-items: center; gap: 18px; font-size: 42px; font-weight: 800; letter-spacing: -0.01em; white-space: nowrap; }
+        .s6-ic { width: 60px; height: 60px; flex: none; border-radius: 18px; display: flex; align-items: center; justify-content: center; }
+        .s6-p .s6-ic { background: var(--pink-soft); }
+        .s6-g .s6-ic { background: var(--green-soft); }
+        #s6-bars { display: flex; align-items: center; gap: 6px; height: 50px; }
+        .s6-bar { width: 8px; height: 50px; border-radius: 4px; background: var(--green); }
+        #s6-flash { position: absolute; inset: 0; background: #fff; opacity: 0; }
+      </style>
+      <div id="s6-root" data-composition-id="s6" data-width="1080" data-height="1920">
+        <div class="topzone" style="top: 110px; gap: 18px">
+          <div id="s6-hdr" class="panel">Набор подскажет <b>Коду</b>:</div>
+          <div id="s6-grid">
+            <div class="s6-pill panel s6-p" id="s6-k1"><div class="s6-ic"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 3 L25 15 L38 15 L27.5 23 L31.5 36 L20 28 L8.5 36 L12.5 23 L2 15 L15 15 Z" fill="#ff3d8b"/></svg></div>Лучший дубль</div>
+            <div class="s6-pill panel s6-g" id="s6-k2"><div class="s6-ic"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="10" cy="32" r="7" fill="none" stroke="#12a35f" stroke-width="5"/><circle cx="10" cy="12" r="7" fill="none" stroke="#12a35f" stroke-width="5"/><path d="M16 28 L40 8 M16 16 L40 36" stroke="#12a35f" stroke-width="5" stroke-linecap="round"/></svg></div>Где резать</div>
+            <div class="s6-pill panel s6-g" id="s6-k3"><div class="s6-ic"><svg width="44" height="44" viewBox="0 0 44 44"><path d="M4 22 H14 L18 10 L26 34 L30 22 H40" fill="none" stroke="#12a35f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>Графика = речь</div>
+            <div class="s6-pill panel s6-p" id="s6-k4"><div class="s6-ic" id="s6-bars-ic"><div id="s6-bars"><div class="s6-bar"></div><div class="s6-bar"></div><div class="s6-bar"></div><div class="s6-bar"></div></div></div>Сведение звука</div>
+          </div>
+        </div>
+        <div id="s6-flash"></div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hitCC": 1.0333, "hitSolo": 2.5667, "s2In": 3.1, "hitFile": 3.7, "hitTwo": 4.9, "s3In": 5.8667, "c1": 7.0667, "c2": 8.1667, "c3": 8.8333, "fs1In": 9.5667, "six": 10.4667, "comp": 10.6333, "s5In": 11.6333, "t1": 12.2333, "t2": 13.4, "t3": 14.2, "t4": 14.8667, "t5": 15.2333, "t6": 16.3, "s6In": 17.3, "hdr": 17.6667, "k1": 20.4, "k2": 21.2, "k3": 21.9, "k4": 23.9, "s7In": 24.4, "pod": 26.3, "style": 27.2667, "fs2In": 27.7333, "fileW": 29.5333, "prompt": 30.9333, "s9In": 31.8333, "gear": 32.5, "strike": 33.1667, "endIn": 34.2, "end": 36.7}; const T0 = 17.3;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s7In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s6-hdr", { autoAlpha: 0, y: -30 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "back.out(1.6)" }, L("hdr"));
+          ["k1", "k2", "k3", "k4"].forEach((k, i) => {
+            tl.fromTo("#s6-" + k, { autoAlpha: 0, scale: 0.8, y: 30 }, { autoAlpha: 1, scale: 1, y: 0, duration: 0.26, ease: "back.out(2)" }, L(k));
+          });
+          // «где резать» — сам рез: белая вспышка по кадру
+          tl.fromTo("#s6-flash", { opacity: 0 }, { opacity: 0.85, duration: 0.05 }, L("k2") + 0.02);
+          tl.to("#s6-flash", { opacity: 0, duration: 0.14 }, L("k2") + 0.07);
+          // «графика = речь»: пилюля пульсирует в такт слову
+          tl.to("#s6-k3", { scale: 1.07, duration: 0.14, yoyo: true, repeat: 3, ease: "sine.inOut" }, L("k3") + 0.3);
+          // «свести звук»: полоски эквалайзера живут
+          tl.fromTo(".s6-bar", { scaleY: 0.3 }, { scaleY: 1, duration: 0.16, yoyo: true, repeat: 9, stagger: 0.06, ease: "sine.inOut" }, L("k4"));
+          tl.to("#s6-root .topzone", { autoAlpha: 0, y: -30, duration: 0.2, ease: "power2.in" }, END - 0.2);
+          window.__timelines["s6"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

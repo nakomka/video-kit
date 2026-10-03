@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s7-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s7-in { gap: 24px; }
+        #s7-dm { display: flex; align-items: center; gap: 18px; padding: 16px 28px 16px 18px; border-radius: 40px; }
+        #s7-dm .ic { width: 62px; height: 62px; border-radius: 50%; background: var(--grad); display: flex; align-items: center; justify-content: center; }
+        #s7-dm span { font-size: 32px; font-weight: 700; }
+        #s7-lab { font-size: 44px; font-weight: 600; text-align: center; margin-top: 14px; }
+        #s7-field { width: 780px; height: 116px; border-radius: 58px; padding: 0 16px 0 44px; display: flex; align-items: center; justify-content: space-between; }
+        #s7-typed { font-size: 56px; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; }
+        #s7-typed .ch { display: inline-block; }
+        #s7-cur { display: inline-block; width: 5px; height: 58px; margin-left: 4px; background: var(--accent); border-radius: 3px; }
+        #s7-send { width: 84px; height: 84px; border-radius: 50%; background: #ecebe7; display: flex; align-items: center; justify-content: center; }
+        #s7-sub { font-size: 26px; color: var(--muted); }
+        #s7-ok { display: inline-flex; padding: 10px 24px 12px; border-radius: 12px; background: var(--ok); color: #fff; font-size: 28px; font-weight: 800; }
+        #s7-thx { font-size: 60px; font-weight: 850; letter-spacing: -0.02em; text-align: center; }
+        #s7-thx .acc { color: var(--accent); }
+      </style>
+      <div id="s7-root" data-composition-id="s7" data-width="1080" data-height="1350">
+        <div id="s7-in" class="zone">
+          <div id="s7-dm" class="card">
+            <div class="ic"><svg width="34" height="34" viewBox="0 0 34 34"><path d="M3 16 L31 4 L24 31 L16 20 Z" fill="#fff" /><path d="M16 20 L31 4" stroke="#ff4a1c" stroke-width="2.5" /></svg></div>
+            <span>Пришлю информацию в ЛС</span>
+          </div>
+          <div id="s7-lab"><span class="w">Напиши </span><span class="w">в комментариях </span><span class="w">слово</span></div>
+          <div id="s7-field" class="card">
+            <div id="s7-typed"><span class="ch">и</span><span class="ch">н</span><span class="ch">т</span><span class="ch">е</span><span class="ch">р</span><span class="ch">е</span><span class="ch">с</span><span class="ch">н</span><span class="ch">о</span><span id="s7-cur"></span></div>
+            <div id="s7-send"><svg width="40" height="40" viewBox="0 0 40 40"><path d="M20 32 V9 M10 18 L20 8 L30 18" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
+          </div>
+          <div><span id="s7-ok">✓ отправлено</span></div>
+          <div id="s7-thx"><span class="w">Спасибо </span><span class="w">за </span><span class="w acc">внимание!</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 37.2;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.end - T0;
+          const tl = gsap.timeline({ paused: true });
+          const blurIn = { autoAlpha: 0, filter: "blur(12px)", y: 12 };
+          const sharp = { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.3, ease: "power2.out" };
+
+          tl.fromTo("#s7-dm", { autoAlpha: 0, scale: 0.5, rotation: -3 }, { autoAlpha: 1, scale: 1, rotation: -2, duration: 0.34, ease: "back.out(2)" }, 0.1);
+          tl.fromTo("#s7-dm .ic", { rotation: 0 }, { rotation: -20, duration: 0.12, yoyo: true, repeat: 1 }, L("ls"));
+          // подпись — по словам: «Напиши» / «в комментариях» / «слово»
+          const lw = gsap.utils.toArray("#s7-lab .w");
+          [["napis", 0], ["komm", 1], ["slovo", 2]].forEach(([k, i]) => tl.fromTo(lw[i], blurIn, sharp, L(k) - 0.05));
+          tl.fromTo("#s7-field", { autoAlpha: 0, scale: 0.92, filter: "blur(12px)" }, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 0.35, ease: "power3.out" }, L("napis") + 0.1);
+          tl.fromTo("#s7-cur", { autoAlpha: 1 }, { autoAlpha: 0, duration: 0.25, repeat: 13, yoyo: true, ease: "steps(1)" }, L("napis") + 0.3);
+          // «интересно» печатается по буквам на своём слове
+          const chs = gsap.utils.toArray("#s7-typed .ch");
+          tl.fromTo(chs, { display: "none" }, { display: "none", duration: 0.01 }, 0);
+          chs.forEach((c, i) => tl.set(c, { display: "inline-block" }, L("inter") - 0.1 + i * 0.055));
+          const done = L("inter") - 0.1 + chs.length * 0.055;
+          tl.to("#s7-send", { backgroundColor: "#ff4a1c", duration: 0.15 }, done);
+          tl.fromTo("#s7-send", { scale: 1 }, { scale: 0.86, duration: 0.1, yoyo: true, repeat: 1 }, L("spas") - 0.35);
+          tl.fromTo("#s7-ok", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(2.2)" }, L("spas") - 0.15);
+          tl.fromTo("#s7-thx .w", blurIn, { ...sharp, stagger: 0.28 }, L("spas") - 0.05);
+          window.__timelines["s7"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

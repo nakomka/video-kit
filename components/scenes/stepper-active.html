@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s5-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s5-in { gap: 18px; }
+        #s5-lab { font-size: 32px; font-weight: 500; color: var(--muted); }
+        #s5-pill { font-size: 64px; }
+        #s5-list { display: flex; flex-direction: column; gap: 10px; width: 800px; margin-top: 8px; }
+        .s5-row { display: flex; align-items: center; gap: 22px; padding: 12px 24px; height: 80px; border-radius: 16px; background: #fff;
+          border: 3px solid rgba(255, 74, 28, 0); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); }
+        .s5-n { width: 46px; height: 46px; border-radius: 50%; background: #ecebe7; color: var(--ink); font-size: 24px; font-weight: 800;
+          display: flex; align-items: center; justify-content: center; flex: none; }
+        .s5-t { font-size: 31px; font-weight: 700; line-height: 1.05; }
+        .s5-s { font-family: var(--mono); font-size: 19px; color: var(--muted); margin-top: 4px; }
+      </style>
+      <div id="s5-root" data-composition-id="s5" data-width="1080" data-height="1350">
+        <div id="s5-in" class="zone">
+          <div id="s5-lab">Помимо этого внутри</div>
+          <div><span id="s5-pill" class="pill">6 компонентов</span></div>
+          <div id="s5-list">
+            <div class="s5-row" id="s5-r1"><div class="s5-n">1</div><div><div class="s5-t">Распознавание речи</div><div class="s5-s">whisper.cpp</div></div></div>
+            <div class="s5-row" id="s5-r2"><div class="s5-n">2</div><div><div class="s5-t">Модель к нему</div><div class="s5-s">large-v3-turbo</div></div></div>
+            <div class="s5-row" id="s5-r3"><div class="s5-n">3</div><div><div class="s5-t">FFmpeg</div><div class="s5-s">рез и звук</div></div></div>
+            <div class="s5-row" id="s5-r4"><div class="s5-n">4</div><div><div class="s5-t">Node.js</div><div class="s5-s">среда запуска</div></div></div>
+            <div class="s5-row" id="s5-r5"><div class="s5-n">5</div><div><div class="s5-t">Python</div><div class="s5-s">скрипты монтажа</div></div></div>
+            <div class="s5-row" id="s5-r6"><div class="s5-n">6</div><div><div class="s5-t">Движок графики</div><div class="s5-s">HyperFrames</div></div></div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 18.2333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s6In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s5-lab", { autoAlpha: 0, filter: "blur(12px)", y: 12 }, { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.32 }, 0.05);
+          tl.fromTo("#s5-pill", { autoAlpha: 0, scale: 1.7, rotation: -3 }, { autoAlpha: 1, scale: 1, rotation: -3, duration: 0.3, ease: "back.out(1.6)" }, L("six"));
+          // ряды-заготовки проступают сразу после плашки, каждый пункт загорается на своём слове
+          tl.fromTo(".s5-row", { autoAlpha: 0, x: -40, filter: "blur(8px)" }, { autoAlpha: 0.45, x: 0, filter: "blur(0px)", duration: 0.3, stagger: 0.06, ease: "power2.out" }, L("six") + 0.35);
+          const keys = ["k1", "k2", "k3", "k4", "k5", "k6"];
+          keys.forEach((k, i) => {
+            const r = "#s5-r" + (i + 1);
+            const t = L(k) - 0.05;
+            tl.to(r, { autoAlpha: 1, borderColor: "rgba(255,74,28,1)", scale: 1.03, duration: 0.22, ease: "back.out(2)" }, t);
+            tl.to(r + " .s5-n", { backgroundColor: "#ff4a1c", color: "#ffffff", duration: 0.2 }, t);
+            if (i > 0) {
+              const p = "#s5-r" + i;
+              tl.to(p, { borderColor: "rgba(255,74,28,0)", scale: 1, duration: 0.2 }, t);
+            }
+          });
+          tl.to("#s5-r6", { borderColor: "rgba(255,74,28,0)", scale: 1, duration: 0.25 }, Math.min(D - 0.5, L("k6") + 0.9));
+          tl.to("#s5-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s5"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

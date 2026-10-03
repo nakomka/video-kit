@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1350" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1350px;
+        overflow: hidden;
+        background: #f4f2ee;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #f4f2ee;
+      }
+      /* фон: светлый / тёмный с крупными «шевронами» у краёв, как в образце */
+      .bg {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+      #bg-light {
+        background: #f4f2ee;
+      }
+      #bg-dark {
+        background: #17181a;
+      }
+      .chev {
+        position: absolute;
+        width: 760px;
+        height: 380px;
+        border-radius: 40px;
+      }
+      #bg-light .chev {
+        background: #ebe8e2;
+      }
+      #bg-dark .chev {
+        background: #1d1e21;
+      }
+      .chev.a {
+        left: -420px;
+        top: -60px;
+        transform: rotate(-32deg);
+      }
+      .chev.b {
+        right: -430px;
+        top: 420px;
+        transform: rotate(-32deg);
+      }
+      .chev.c {
+        left: -380px;
+        top: 900px;
+        transform: rotate(28deg);
+      }
+      /* окно спикера: прямоугольник снизу по центру, стоит весь ролик */
+      #spk {
+        position: absolute;
+        left: 250px;
+        top: 806px;
+        width: 580px;
+        height: 500px;
+        border-radius: 36px;
+        overflow: hidden;
+        box-shadow:
+          0 0 0 2px rgba(255, 255, 255, 0.75),
+          0 30px 80px rgba(0, 0, 0, 0.35);
+        background: #222;
+      }
+      #aroll {
+        position: absolute;
+        left: 0;
+        top: -150px;
+        width: 580px;
+        height: 1031px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="45.5667" data-width="1080" data-height="1350">
+      <div id="bg-light" class="bg" data-layout-allow-overflow>
+        <div class="chev a"></div>
+        <div class="chev b"></div>
+        <div class="chev c"></div>
+      </div>
+      <div id="bg-dark" class="bg" data-layout-allow-overflow>
+        <div class="chev a"></div>
+        <div class="chev b"></div>
+        <div class="chev c"></div>
+      </div>
+
+      <div id="spk" data-layout-allow-overflow>
+        <video id="aroll" class="clip" src="assets/cut.mp4" data-start="0" data-duration="45.5667" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <div id="h-s1" data-clip="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0.0" data-duration="5.1333" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s2" data-clip="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="5.1333" data-duration="4.9333" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s3" data-clip="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="10.0667" data-duration="4.3667" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s4" data-clip="s4" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="14.4333" data-duration="3.8" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s5" data-clip="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="18.2333" data-duration="8.6" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s6" data-clip="s6" data-composition-id="s6" data-composition-src="compositions/s6.html" data-start="26.8333" data-duration="10.3667" data-track-index="2" data-width="1080" data-height="1350"></div>
+      <div id="h-s7" data-clip="s7" data-composition-id="s7" data-composition-src="compositions/s7.html" data-start="37.2" data-duration="8.3667" data-track-index="2" data-width="1080" data-height="1350"></div>
+    </div>
+    <script>
+      (() => {
+        /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 0;/*CUES:END*/
+        const tl = gsap.timeline({ paused: true });
+        // фон чередуется по сценам hard cut'ом: s1 светлый, s2 тёмный, …
+        tl.fromTo("#bg-dark", { autoAlpha: 0 }, { autoAlpha: 0, duration: 0.01 }, 0);
+        ["s2In", "s4In", "s6In"].forEach((k) => tl.set("#bg-dark", { autoAlpha: 1 }, C[k]));
+        ["s3In", "s5In", "s7In"].forEach((k) => tl.set("#bg-dark", { autoAlpha: 0 }, C[k]));
+        // шевроны медленно дрейфуют — фон живой, но не отвлекает
+        tl.fromTo(".chev.a", { x: 0 }, { x: 60, duration: C.end, ease: "none" }, 0);
+        tl.fromTo(".chev.b", { x: 0 }, { x: -50, duration: C.end, ease: "none" }, 0);
+        tl.fromTo(".chev.c", { y: 0 }, { y: -40, duration: C.end, ease: "none" }, 0);
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

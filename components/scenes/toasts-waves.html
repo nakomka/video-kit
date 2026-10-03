@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s4-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--paper); }
+        #s4-stage { position: relative; width: 960px; height: 500px; }
+        .s4-ring { position: absolute; left: 330px; top: 100px; width: 300px; height: 300px; border-radius: 50%; background: rgba(255, 74, 28, 0.22); }
+        #s4-tile { position: absolute; left: 400px; top: 170px; width: 160px; height: 160px; border-radius: 38px; }
+        #s4-t1 { left: 20px; top: 40px; }
+        #s4-t2 { right: 10px; top: 120px; }
+        #s4-t3 { left: 230px; top: 390px; }
+        #s4-cap { text-align: center; font-size: 46px; font-weight: 600; line-height: 1.15; }
+        #s4-cap .acc { color: var(--accent); font-weight: 800; }
+      </style>
+      <div id="s4-root" data-composition-id="s4" data-width="1080" data-height="1350">
+        <div id="s4-in" class="zone">
+          <div id="s4-stage" data-layout-allow-overflow data-layout-allow-overlap>
+            <div class="s4-ring"></div>
+            <div class="s4-ring"></div>
+            <div class="s4-ring"></div>
+            <div id="s4-tile" class="icon-tile">
+              <svg width="96" height="96" viewBox="0 0 96 96">
+                <path d="M10 26 Q10 18 18 18 H38 L46 28 H78 Q86 28 86 36 V72 Q86 80 78 80 H18 Q10 80 10 72 Z" fill="#ff4a1c" />
+                <path d="M10 40 H86" stroke="#fff" stroke-width="5" />
+              </svg>
+            </div>
+            <div id="s4-t1" class="toast"><div><b>Инструкция</b><i>пошагово</i></div><div class="sq">✓</div></div>
+            <div id="s4-t2" class="toast"><div><b>Промты</b><i>готовые запросы</i></div><div class="sq">✓</div></div>
+            <div id="s4-t3" class="toast"><div><b>Установщики</b><i>ставят всё сами</i></div><div class="sq">✓</div></div>
+          </div>
+          <div id="s4-cap"><div id="s4-c1">Внутри набора —</div><div id="s4-c2" class="acc">всё для старта</div></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 14.4333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s5In - T0;
+          const tl = gsap.timeline({ paused: true });
+          // папка в центре, от неё расходятся волны
+          tl.fromTo("#s4-tile", { scale: 0, rotation: -15 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)" }, 0.02);
+          gsap.utils.toArray(".s4-ring").forEach((r, i) => {
+            tl.fromTo(r, { scale: 0.55, autoAlpha: 0.9 }, { scale: 1.7, autoAlpha: 0, duration: 1.8, ease: "power1.out", repeat: Math.ceil(D / 1.8), delay: 0 }, 0.1 + i * 0.6);
+          });
+          tl.fromTo("#s4-c1", { autoAlpha: 0, filter: "blur(12px)", y: 12 }, { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.32 }, 0.25);
+          // тосты выпрыгивают на своих словах, с наклоном
+          [["#s4-t1", "instr", -3], ["#s4-t2", "prom", 3], ["#s4-t3", "ust", -2]].forEach(([id, k, r]) => {
+            tl.fromTo(id, { autoAlpha: 0, scale: 0.4, rotation: r }, { autoAlpha: 1, scale: 1, rotation: r, duration: 0.32, ease: "back.out(2.2)" }, L(k) - 0.05);
+          });
+          tl.fromTo("#s4-c2", { autoAlpha: 0, filter: "blur(12px)", y: 12 }, { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.32 }, L("ust") + 0.45);
+          tl.to("#s4-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s4"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

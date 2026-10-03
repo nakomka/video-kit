@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s1-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s1-top { display: flex; flex-direction: column; align-items: center; gap: 22px; }
+        #s1-pill { font-size: 76px; }
+        #s1-line { font-size: 42px; font-weight: 500; color: var(--ink); text-align: center; }
+        #s1-card { width: 880px; padding: 30px 34px 34px; }
+        #s1-head { display: flex; align-items: center; gap: 22px; }
+        #s1-chip { width: 76px; height: 76px; border-radius: 20px; background: var(--grad); display: flex; align-items: center; justify-content: center; flex: none; }
+        #s1-nn { font-size: 54px; font-weight: 850; letter-spacing: -0.03em; color: var(--accent); line-height: 1; }
+        #s1-sub { font-size: 30px; font-weight: 600; color: var(--ink); margin-top: 6px; }
+        #s1-tl { position: relative; margin-top: 26px; height: 150px; border-radius: 14px; background: #f3f1ed; overflow: hidden; }
+        .s1-ruler { position: absolute; left: 0; right: 0; top: 0; height: 26px; border-bottom: 1px solid var(--line);
+          background: repeating-linear-gradient(90deg, rgba(20,22,26,.18) 0 2px, transparent 2px 40px); }
+        .s1-trk { position: absolute; left: 14px; right: 14px; height: 46px; }
+        #s1-v { top: 38px; }
+        #s1-a { top: 94px; display: flex; align-items: center; gap: 4px; }
+        .s1-c { position: absolute; top: 0; height: 46px; border-radius: 10px; }
+        .s1-bar { width: 6px; border-radius: 3px; background: rgba(255, 74, 28, 0.45); }
+        #s1-ph { position: absolute; top: 26px; bottom: 0; left: 14px; width: 4px; background: var(--ink); border-radius: 2px; }
+        #s1-ph::before { content: ""; position: absolute; left: -9px; top: -12px; width: 22px; height: 14px; border-radius: 4px; background: var(--ink); }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1080" data-height="1350">
+        <div id="s1-in" class="zone">
+          <div id="s1-top">
+            <div id="s1-logo" class="icon-tile">
+              <svg width="70" height="70" viewBox="0 0 70 70"><path d="M22 14 L56 33 Q60 35 56 37 L22 56 Q16 59 16 52 L16 18 Q16 11 22 14 Z" fill="#ff4a1c" /></svg>
+            </div>
+            <div><span id="s1-pill" class="pill">Всем привет!</span></div>
+          </div>
+          <div id="s1-line"><span class="w">Мало кого </span><span class="w">удивить </span><span class="w">тем, что</span></div>
+          <div id="s1-card" class="card">
+            <div id="s1-head">
+              <div id="s1-chip">
+                <svg width="44" height="44" viewBox="0 0 44 44" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round">
+                  <circle cx="22" cy="22" r="6" fill="#fff" stroke="none" /><path d="M22 4v8M22 32v8M4 22h8M32 22h8M9 9l6 6M29 29l6 6M35 9l-6 6M15 29l-6 6" />
+                </svg>
+              </div>
+              <div>
+                <div id="s1-nn">нейросеть</div>
+                <div id="s1-sub"><span class="w">умеет </span><span class="w s1-m">монтировать </span><span class="w s1-r">ролики</span></div>
+              </div>
+            </div>
+            <div id="s1-tl">
+              <div class="s1-ruler"></div>
+              <div id="s1-v" class="s1-trk">
+                <div class="s1-c" style="left: 0; width: 170px; background: #e3262b"></div>
+                <div class="s1-c" style="left: 178px; width: 250px; background: #ff4a1c"></div>
+                <div class="s1-c" style="left: 436px; width: 130px; background: #ff7a1a"></div>
+                <div class="s1-c" style="left: 574px; width: 210px; background: #ffb08a"></div>
+              </div>
+              <div id="s1-a" class="s1-trk"></div>
+              <div id="s1-ph"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 0.0;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s2In - T0;
+          const tl = gsap.timeline({ paused: true });
+          const wave = document.querySelector("#s1-a");
+          if (wave && !wave.children.length) {
+            for (let i = 0; i < 64; i++) {
+              const b = document.createElement("div");
+              b.className = "s1-bar";
+              b.style.height = (8 + Math.abs(Math.sin(i * 1.7) * 26 + Math.sin(i * 0.43) * 10)) + "px";
+              wave.appendChild(b);
+            }
+          }
+          const blurIn = { autoAlpha: 0, filter: "blur(12px)", y: 12 };
+          const sharp = { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.32, ease: "power2.out" };
+
+          // сначала лого и плашка по центру, потом поднимаются и ужимаются, освобождая место
+          tl.fromTo("#s1-top", { y: 210, scale: 1.15 }, { y: 210, scale: 1.15, duration: 0.01 }, 0);
+          tl.fromTo("#s1-logo", { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: 0.4, ease: "back.out(2)" }, Math.max(0, L("hiLogo")));
+          tl.fromTo("#s1-pill", { autoAlpha: 0, scale: 1.7, rotation: -4 }, { autoAlpha: 1, scale: 1, rotation: -4, duration: 0.3, ease: "back.out(1.6)" }, L("hiPill"));
+          tl.to("#s1-top", { y: 0, scale: 1, duration: 0.5, ease: "power3.inOut" }, L("l1") - 0.15);
+          tl.fromTo("#s1-line .w", blurIn, { ...sharp, stagger: 0.42 }, L("l1") + 0.25);
+          // карточка «нейросеть» на своём слове, клипы сами собираются на дорожку на «монтировать»
+          tl.fromTo("#s1-card", { autoAlpha: 0, y: 50, scale: 0.94, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, L("nn") - 0.05);
+          tl.fromTo("#s1-sub .w", blurIn, { ...sharp, stagger: 0.25 }, L("nn") + 0.3);
+          tl.fromTo(".s1-c", { x: 700, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.35, stagger: 0.12, ease: "back.out(1.4)" }, L("mont"));
+          tl.fromTo(".s1-bar", { scaleY: 0 }, { scaleY: 1, duration: 0.2, stagger: 0.008, ease: "power2.out" }, L("mont") + 0.2);
+          tl.fromTo("#s1-ph", { x: 0 }, { x: 790, duration: D - L("mont"), ease: "none" }, L("mont"));
+          tl.fromTo("#s1-nn", { scale: 1 }, { scale: 1.08, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.out", transformOrigin: "0% 50%" }, L("rolik"));
+          // уход: размытие, затем жёсткая склейка на следующую сцену
+          tl.to("#s1-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s1"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

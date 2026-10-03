@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s2-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--paper); }
+        #s2-pill { font-size: 70px; }
+        #s2-head { font-size: 46px; font-weight: 600; text-align: center; color: var(--paper); }
+        #s2-wrap { position: relative; width: 820px; height: 330px; margin-top: 18px; }
+        #s2-card { position: absolute; left: 0; right: 0; top: 0; bottom: 0; padding: 34px 40px; display: flex; flex-direction: column; justify-content: center; }
+        #s2-lab { display: flex; align-items: center; gap: 16px; font-size: 30px; font-weight: 700; }
+        #s2-lab .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--accent); }
+        #s2-price { display: flex; align-items: baseline; gap: 6px; margin-top: 20px; }
+        #s2-odo { font-size: 170px; color: var(--ink); }
+        #s2-rub { font-size: 120px; font-weight: 850; color: var(--ink); }
+        #s2-cap { font-family: var(--mono); font-size: 22px; color: var(--muted); margin-top: 10px; }
+        #s2-toast { right: -40px; top: 24px; }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1080" data-height="1350">
+        <div id="s2-in" class="zone">
+          <div><span id="s2-pill" class="pill">самое бесячее</span></div>
+          <div id="s2-head"><span class="w">эту </span><span class="w">информацию </span><span class="w">продают</span></div>
+          <div id="s2-wrap" data-layout-allow-overflow>
+            <div id="s2-card" class="card">
+              <div id="s2-lab"><span class="dot"></span>Курс «ИИ-монтаж»</div>
+              <div id="s2-price"><span id="s2-rub">$</span><span id="s2-odo" class="odo" data-layout-allow-occlusion data-v="99"></span></div>
+              <div id="s2-cap">за большие деньги</div>
+            </div>
+            <div id="s2-toast" class="toast" data-layout-allow-overlap>
+              <div><b>Необоснованно</b><i>цена ≠ ценность</i></div>
+              <div class="sq">✕</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 5.1333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s3In - T0;
+          const tl = gsap.timeline({ paused: true });
+          // одометр: на каждую цифру колонка 0–9 ×3, перекат yPercent
+          const odo = document.querySelector("#s2-odo");
+          const val = odo.dataset.v;
+          if (!odo.children.length) {
+            for (const ch of val) {
+              if (ch === " ") { const s = document.createElement("span"); s.className = "sp"; odo.appendChild(s); continue; }
+              const dg = document.createElement("span"); dg.className = "dg";
+              const col = document.createElement("span"); col.className = "col s2-col"; col.dataset.d = ch;
+              for (let i = 0; i < 30; i++) { const s = document.createElement("span"); s.textContent = i % 10; col.appendChild(s); }
+              dg.appendChild(col); odo.appendChild(dg);
+            }
+          }
+          const blurIn = { autoAlpha: 0, filter: "blur(12px)", y: 12 };
+          const sharp = { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.32, ease: "power2.out" };
+
+          tl.fromTo("#s2-pill", { autoAlpha: 0, scale: 1.7, rotation: 3 }, { autoAlpha: 1, scale: 1, rotation: 3, duration: 0.3, ease: "back.out(1.6)" }, L("besi"));
+          tl.fromTo("#s2-head .w", blurIn, { ...sharp, stagger: 0.32 }, L("prod") - 0.75);
+          tl.fromTo("#s2-card", { autoAlpha: 0, y: 50, scale: 0.94, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, L("prod"));
+          const cols = [...document.querySelectorAll(".s2-col")];
+          const t0 = L("prod") + 0.25, t1 = L("big") + 0.35;
+          cols.forEach((c, i) => {
+            const d = +c.dataset.d;
+            tl.fromTo(c, { yPercent: 0 }, { yPercent: -((20 + d) / 30) * 100, duration: t1 - t0 - (cols.length - 1 - i) * 0.08, ease: "power3.inOut" }, t0);
+          });
+          tl.to(["#s2-odo", "#s2-rub"], { color: "#ff4a1c", duration: 0.2 }, t1);
+          tl.fromTo("#s2-odo", { scale: 1 }, { scale: 1.06, duration: 0.14, yoyo: true, repeat: 1, transformOrigin: "0% 60%" }, t1);
+          tl.fromTo("#s2-toast", { autoAlpha: 0, scale: 0.4, rotation: 3 }, { autoAlpha: 1, scale: 1, rotation: 3, duration: 0.32, ease: "back.out(2.2)" }, L("neob"));
+          tl.to("#s2-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s2"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

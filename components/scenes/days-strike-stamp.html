@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s3-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--ink); }
+        #s3-head { font-size: 56px; font-weight: 800; letter-spacing: -0.02em; text-align: center; line-height: 1.1; }
+        #s3-head .acc { color: var(--accent); }
+        #s3-card { width: 860px; padding: 32px 40px; display: flex; align-items: center; gap: 36px; }
+        #s3-icon { width: 120px; height: 148px; flex: none; }
+        #s3-lab { font-size: 30px; font-weight: 500; color: var(--muted); }
+        #s3-big { font-size: 92px; font-weight: 850; letter-spacing: -0.03em; color: var(--accent); line-height: 1; }
+        #s3-days { display: flex; gap: 9px; margin-top: 16px; }
+        .s3-d { width: 34px; height: 34px; border-radius: 9px; background: rgba(20, 22, 26, 0.1); }
+        #s3-free { position: relative; display: flex; align-items: center; justify-content: flex-start; padding-left: 40px; height: 150px; width: 860px; }
+        #s3-old { position: relative; font-size: 96px; font-weight: 850; letter-spacing: -0.03em; color: var(--muted); }
+        #s3-strike { position: absolute; left: -10px; right: -10px; top: 50%; height: 9px; border-radius: 5px; background: var(--accent-2); transform-origin: 0 50%; }
+        #s3-stamp { position: absolute; right: 10px; top: 52px; font-size: 64px; padding: 10px 28px 14px; border: 0; }
+      </style>
+      <div id="s3-root" data-composition-id="s3" data-width="1080" data-height="1350">
+        <div id="s3-in" class="zone">
+          <div id="s3-head"><span class="w">Я </span><span class="w">собрал </span><span class="w acc">свою </span><span class="w acc">версию</span></div>
+          <div id="s3-card" class="card">
+            <svg id="s3-icon" viewBox="0 0 130 160">
+              <path d="M10 10 H86 L120 44 V150 H10 Z" fill="#ffe2d8" stroke="#ff4a1c" stroke-width="8" stroke-linejoin="round" />
+              <path d="M86 10 V44 H120" fill="none" stroke="#ff4a1c" stroke-width="8" stroke-linejoin="round" />
+              <path d="M32 78 H98 M32 102 H98 M32 126 H74" stroke="#ff4a1c" stroke-width="8" stroke-linecap="round" />
+            </svg>
+            <div>
+              <div id="s3-lab">собрал за</div>
+              <div id="s3-big"><span id="s3-num" style="display: inline-block">2</span> недели</div>
+              <div id="s3-days">
+                <div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div>
+                <div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div><div class="s3-d"></div>
+              </div>
+            </div>
+          </div>
+          <div id="s3-free" data-layout-allow-overflow data-layout-allow-overlap>
+            <div id="s3-old" data-layout-allow-overlap>$99<div id="s3-strike"></div></div>
+            <div id="s3-stamp" class="pill" data-layout-allow-overlap>БЕСПЛАТНО</div>
+          </div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 10.0667;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s4In - T0;
+          const tl = gsap.timeline({ paused: true });
+          const blurIn = { autoAlpha: 0, filter: "blur(12px)", y: 12 };
+          const sharp = { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.3, ease: "power2.out" };
+
+          tl.fromTo("#s3-head .w", blurIn, { ...sharp, stagger: 0.15 }, Math.max(0, L("sobr") - 0.1));
+          tl.fromTo("#s3-card", { autoAlpha: 0, y: 50, scale: 0.94, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, L("dve") - 0.45);
+          tl.fromTo("#s3-num", { scale: 0.3, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.3, ease: "back.out(2.5)" }, L("dve"));
+          tl.fromTo(".s3-d", { backgroundColor: "rgba(20,22,26,0.10)" }, { backgroundColor: "#ff4a1c", duration: 0.05, stagger: 0.045 }, L("dve"));
+          // «поделиться» — старая цена; «бесплатно» — зачёркивание и штамп впечатывается
+          tl.fromTo("#s3-old", { autoAlpha: 0, filter: "blur(10px)", y: 20 }, { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.3 }, L("podel"));
+          tl.fromTo("#s3-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.28, ease: "power2.out" }, L("free") - 0.1);
+          tl.fromTo("#s3-stamp", { autoAlpha: 0, scale: 1.9, rotation: -7 }, { autoAlpha: 1, scale: 1, rotation: -7, duration: 0.26, ease: "power4.in" }, L("free") + 0.1);
+          tl.fromTo("#s3-free", { x: 0 }, { x: 8, duration: 0.05, yoyo: true, repeat: 3 }, L("free") + 0.36);
+          tl.to("#s3-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s3"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

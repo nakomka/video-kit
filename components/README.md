@@ -43,8 +43,20 @@
 | `assets/instagram.svg`, `assets/telegram.png` | значки соцсетей для телефона и энд-карда | — | nn2 |
 | `layout/compare-before-after-vertical.index.html` | корень сравнения 9:16: переливающийся градиент `#1d2f5c` ↔ `#c9d3e6`, две вертикальные карточки 500×889 «ДО» / «ПОСЛЕ ИИ МОНТАЖА» (`#d8ff3c`), вход карточек, уход пока их видео ещё играет, встык — концовка во весь экран с ударами зумом на словах и субтитрами | `zIn`, `zFree`…`zWord` | nnzalupa |
 | `tools/highlights.py` (в `tools/` набора) | нарезка лучших моментов для сравнения: одинаковые куски из рез-без-графики и готового ролика, ×1.5–2, «сырой» цвет для «ДО» | — | nnzalupa |
+| `layout/speaker-window-bottom-4x5.index.html` | корень 4:5 (1080×1350): спикер в окне-прямоугольнике снизу, смена светлый/тёмный фон с шевронами по `sNIn` | `s2In…s7In`, `end` | nnn |
+| `scenes/timeline-assemble.html` | плитка-лого, плашка с наклоном, строка по словам с размытием, карточка «нейросеть»: клипы съезжаются на дорожку, плейхед | `hiLogo`, `hiPill`, `l1`, `nn`, `mont` | nnn s1 |
+| `scenes/price-odometer-toast.html` | плашка, карточка цены с одометром (перекат цифр), тост ✕ с наклоном | `besi`, `prod`, `big`, `neob` | nnn s2 |
+| `scenes/days-strike-stamp.html` | заголовок по словам, «2 недели» + 14 клеток, зачёркивание цены, штамп «БЕСПЛАТНО» | `sobr`, `dve`, `podel`, `free` | nnn s3 |
+| `scenes/toasts-waves.html` | иконка с радиальными волнами, тосты ✓ на своих словах, подпись в 2 строки | `instr`, `prom`, `ust` | nnn s4 |
+| `scenes/stepper-active.html` | плашка + список-степпер из 6 пунктов, активный в оранжевой рамке, моно-подписи | `six`, `k1…k6` | nnn s5 |
+| `scenes/social-follow-cards.html` | карточки Instagram/Telegram (лого, аватар), нажатие «Подписаться», плашка «ссылка в шапке» | `sub1`, `insta`, `tg`, `shapka`, `sub2`, `instr2` | nnn s6 |
+| `scenes/input-typing-cta.html` | CTA: поле ввода печатает слово по буквам, кнопка отправки, «отправлено», «Спасибо» | `ls`, `napis`, `komm`, `slovo`, `inter`, `spas` | nnn s7 |
+| `scenes/styles-explainer-4x5.css` | стиль explainer-window: плашки-градиент, тосты, одометр, зона графики над окном (кадр 4:5) | — | nnn |
 
 Субтитры (`captions.html`) в библиотеку не входят: их целиком генерирует `tools/cues_gen.py`.
+
+В сценах с соцсетями (`social-follow-cards`, `phone-ig-to-telegram`, `comment-endcard`) стоят название
+и описание канала автора набора («Освобождаем руки») — замени на свои, а аватар и лого положи в `project/assets/`.
 
 ## Шрифт Unbounded
 Сцены `*-promo` и корень `speaker-circle-phone-rays` ждут шрифт в `project/assets/fonts/Unbounded.ttf`
@@ -58,12 +70,7 @@
 
 | Компонент | Нужен в |
 |---|---|
-| окно спикера-прямоугольник снизу + смена светлый/тёмный фон | explainer-window |
 | карточка GitHub-репо со счётчиком звёзд | explainer-window |
-| тосты-ошибки с ✕ + радиальные волны | explainer-window |
-| список-степпер с активной рамкой и моно-подписью | explainer-window |
-| счётчик с перекатом цифр (800→70) | explainer-window |
-| поле ввода с печатью + кнопка отправки (CTA) | explainer-window |
 | линейный график с бегущей точкой | raw-vs-edited |
 | текст за спикером (нужна маска) | raw-vs-edited |
 | полароид со скотчем | raw-vs-edited |

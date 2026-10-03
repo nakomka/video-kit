@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles.css" />
+      <style>
+        #s6-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--paper); }
+        #s6-in { gap: 20px; }
+        #s6-head { font-size: 48px; font-weight: 700; letter-spacing: -0.02em; text-align: center; }
+        .s6-card { width: 860px; padding: 24px 28px; display: flex; align-items: center; gap: 24px; }
+        .s6-logo { width: 84px; height: 84px; flex: none; }
+        .s6-av { position: relative; width: 104px; height: 104px; flex: none; }
+        .s6-av img.ph { width: 104px; height: 104px; border-radius: 50%; object-fit: contain; background: #fff; padding: 6px; box-shadow: 0 0 0 3px #fff, 0 0 0 5px rgba(20,22,26,.08); }
+        .s6-av img.tg { position: absolute; right: -8px; bottom: -6px; width: 44px; height: 44px; border-radius: 50%; box-shadow: 0 0 0 4px #fff; }
+        .s6-txt { flex: 1; min-width: 0; }
+        .s6-t { font-size: 34px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; }
+        .s6-s { font-size: 23px; color: var(--muted); margin-top: 5px; }
+        .s6-btn { position: relative; width: 236px; height: 64px; flex: none; }
+        .s6-b { position: absolute; inset: 0; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; }
+        .s6-b.on { background: var(--grad); color: #fff; }
+        .s6-b.off { background: #ecebe7; color: var(--ink); }
+        #s6-link { display: flex; align-items: center; gap: 14px; }
+        #s6-link .pill { font-size: 30px; padding: 8px 22px 11px; border-radius: 12px; }
+        #s6-arrow { font-size: 44px; font-weight: 800; color: var(--accent); }
+        #s6-ok { display: inline-flex; align-items: center; gap: 10px; padding: 10px 24px 12px; border-radius: 12px; background: var(--ok); color: #fff; font-size: 28px; font-weight: 800; }
+      </style>
+      <div id="s6-root" data-composition-id="s6" data-width="1080" data-height="1350">
+        <div id="s6-in" class="zone">
+          <div id="s6-head"><span class="w">Чтобы </span><span class="w">получить </span><span class="w">всё </span><span class="w">это</span></div>
+          <div id="s6-ig" class="card s6-card">
+            <img class="s6-logo" src="assets/instagram.svg" alt="" />
+            <div class="s6-txt"><div class="s6-t">Мой профиль</div><div class="s6-s">Instagram</div></div>
+            <div class="s6-btn"><div class="s6-b on" id="s6-ig-on">Подписаться</div><div class="s6-b off" id="s6-ig-off">✓ Вы подписаны</div></div>
+          </div>
+          <div id="s6-link"><span id="s6-arrow">↓</span><span class="pill">ссылка в шапке профиля</span></div>
+          <div id="s6-tg" class="card s6-card">
+            <div class="s6-av"><img class="ph" src="assets/channel.jpg" alt="" /><img class="tg" src="assets/telegram.png" alt="" /></div>
+            <div class="s6-txt"><div class="s6-t">Освобождаем руки</div><div class="s6-s">Внедрение ИИ для монтажа</div></div>
+            <div class="s6-btn"><div class="s6-b on" id="s6-tg-on">Подписаться</div><div class="s6-b off" id="s6-tg-off">✓ Вы подписаны</div></div>
+          </div>
+          <div><span id="s6-ok">✓ вся инструкция там</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"s1In": 0.0, "hiLogo": 0.0, "hiPill": 0.1667, "l1": 1.1, "nn": 3.1, "mont": 3.7333, "rolik": 4.2667, "s2In": 5.1333, "besi": 5.2667, "prod": 6.8333, "neob": 7.8, "big": 8.7, "s3In": 10.0667, "sobr": 10.1667, "dve": 11.1667, "podel": 12.1667, "free": 13.5333, "s4In": 14.4333, "instr": 15.3667, "prom": 16.6, "ust": 17.1, "s5In": 18.2333, "six": 19.2667, "k1": 21.1333, "k2": 22.3667, "k3": 23.1333, "k4": 23.7667, "k5": 24.4, "k6": 25.1667, "s6In": 26.8333, "sub1": 28.5667, "insta": 30.3, "tg": 31.3333, "shapka": 33.2, "sub2": 34.6, "instr2": 36.3, "s7In": 37.2, "ls": 39.0333, "napis": 41.0333, "komm": 41.4667, "slovo": 42.0667, "inter": 42.3333, "spas": 43.5333, "end": 45.5667}; const T0 = 26.8333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const D = C.s7In - T0;
+          const tl = gsap.timeline({ paused: true });
+          const blurIn = { autoAlpha: 0, filter: "blur(12px)", y: 12 };
+          const sharp = { autoAlpha: 1, filter: "blur(0px)", y: 0, duration: 0.3, ease: "power2.out" };
+          const cardIn = (id, t) => tl.fromTo(id, { autoAlpha: 0, y: 40, scale: 0.94, filter: "blur(10px)" }, { autoAlpha: 1, y: 0, scale: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, t);
+          const press = (on, off, btn, t) => {
+            tl.fromTo(btn, { scale: 1 }, { scale: 0.9, duration: 0.09, yoyo: true, repeat: 1, ease: "power2.out" }, t);
+            tl.to(on, { autoAlpha: 0, duration: 0.12 }, t + 0.09);
+            tl.to(off, { autoAlpha: 1, duration: 0.12 }, t + 0.09);
+          };
+          tl.fromTo(".s6-b.off", { autoAlpha: 0 }, { autoAlpha: 0, duration: 0.01 }, 0);
+          tl.fromTo("#s6-head .w", blurIn, { ...sharp, stagger: 0.22 }, 0.05);
+          cardIn("#s6-ig", L("sub1") - 0.2);
+          press("#s6-ig-on", "#s6-ig-off", "#s6-ig .s6-btn", L("insta"));
+          cardIn("#s6-tg", L("tg") - 0.05);
+          tl.fromTo("#s6-link", { autoAlpha: 0, scale: 1.6, rotation: -3 }, { autoAlpha: 1, scale: 1, rotation: -3, duration: 0.3, ease: "back.out(1.6)" }, L("shapka") - 0.05);
+          tl.fromTo("#s6-arrow", { y: -6 }, { y: 6, duration: 0.35, yoyo: true, repeat: 7, ease: "sine.inOut" }, L("shapka") + 0.3);
+          press("#s6-tg-on", "#s6-tg-off", "#s6-tg .s6-btn", L("sub2"));
+          tl.fromTo("#s6-ok", { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "back.out(2.2)" }, L("instr2") - 0.1);
+          tl.to("#s6-in", { filter: "blur(14px)", autoAlpha: 0, scale: 0.97, duration: 0.18, ease: "power2.in" }, D - 0.18);
+          window.__timelines["s6"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

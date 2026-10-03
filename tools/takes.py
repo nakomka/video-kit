@@ -1,6 +1,11 @@
 """Шаг 2, до EDL: все заходы на каждую фразу и лучший из них.
 
-python tools/takes.py            # все исходники → печать + .tmp/takes.json
+python tools/takes.py            # все исходники → печать + .tmp/takes.json + out/takes.md
+python tools/takes.py --clips    # плюс видеофрагмент каждого захода в out/takes/ (послушать интонацию)
+
+СПИСОК ДУБЛЕЙ (out/takes.md) показывается человеку ДО монтажа: фразы с несколькими
+заходами, у каждого номер (1а, 1б…), время, текст и рекомендация ★. Человек выбирает
+по интонации — его выбор идёт в EDL. Если у всех фраз один заход — одна строка.
 
 Whisper по ЦЕЛОМУ файлу склеивает заходы в одну фразу: фальстарт «Отдаю абсолют…»
 и сразу «Отдаю абсолютно бесплатно…» он пишет одним «Отдаю абсолютно бесплатно» (nnzalupa).
@@ -18,6 +23,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 
 from common import ROOT, SOURCES, TMP, load_json, save_json, norm_word
 from fragcheck import transcribe_piece
@@ -141,3 +147,54 @@ for sid in SOURCES:
 save_json(".tmp/takes_cache.json", cache)
 save_json(".tmp/takes.json", report)
 print(f"ДУБЛИ: {len(report['bad'])} неудачных высказываний → .tmp/takes.json (edl_check.py не пустит их в EDL)")
+
+# ---------- список дублей для человека ----------
+def mmss(t):
+    return f"{int(t // 60)}:{t % 60:05.2f}"
+
+
+groups, used = [], set()
+U = report["utterances"]
+for i, u in enumerate(U):
+    if i in used or not u["mark"].startswith("ФАЛЬСТАРТ"):
+        continue
+    g, j = [i], i
+    while U[j]["mark"].startswith("ФАЛЬСТАРТ") and j + 1 < len(U):
+        m = re.search(r"заход ([\d.]+)–", U[j]["mark"])
+        k = next((x for x in range(j + 1, len(U)) if m and abs(U[x]["a"] - float(m.group(1))) < 0.05), j + 1)
+        g.append(k)
+        j = k
+    used.update(g)
+    groups.append(g)
+# фальстарт «не вошёл в общий текст» относится к следующему заходу
+lines = ["# Дубли — выбери по интонации", ""]
+clips = "--clips" in sys.argv
+if clips:
+    os.makedirs(os.path.join(ROOT, "out", "takes"), exist_ok=True)
+letters_ab = "абвгдежз"
+for n, g in enumerate(groups, 1):
+    best = g[-1]
+    lines.append(f"**Фраза {n}:** «{U[best]['text'][:60]}…»")
+    for k, i in enumerate(g):
+        u, tag = U[i], f"{n}{letters_ab[k]}"
+        star = "★ рекомендую — целиком, без запинок" if i == best else "✗ " + u["mark"].split(":")[0].split("→")[0].strip().lower()
+        line = f"- **{tag}** {mmss(u['a'])}–{mmss(u['b'])} «{u['text'][:70]}» — {star}"
+        if clips:
+            out = f"out/takes/{tag}.mp4"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{max(0, u['a'] - 0.2):.2f}", "-to", f"{u['b'] + 0.3:.2f}",
+                            "-i", SOURCES[u["src"]], "-vf", "scale=540:-2", "-c:v", "libx264", "-crf", "26",
+                            "-preset", "veryfast", "-c:a", "aac", "-b:a", "128k", out], cwd=ROOT, check=True)
+            line += f" · [{tag}.mp4](takes/{tag}.mp4)"
+        lines.append(line)
+    lines.append("")
+st = [b for b in report["bad"] if b[3].startswith("ЗАПИНКА")]
+if st:
+    lines.append("**Запинки внутри фраз — вырежу:** " + "; ".join(f"{mmss(a)} {why.split(': ', 1)[1]}" for _, a, _, why in st))
+if not groups:
+    lines.insert(2, "Каждая фраза сказана одним заходом — выбирать не из чего.")
+if groups:
+    lines.append("")
+    lines.append("Напиши номера выбранных заходов (например «1а, 2б») или «как рекомендуешь».")
+os.makedirs(os.path.join(ROOT, "out"), exist_ok=True)
+open(os.path.join(ROOT, "out", "takes.md"), "w", encoding="utf-8").write("\n".join(lines) + "\n")
+print("СПИСОК ДУБЛЕЙ → out/takes.md" + (" (+ фрагменты out/takes/)" if clips else "") + " — покажи человеку до монтажа")

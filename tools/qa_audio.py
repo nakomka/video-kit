@@ -10,7 +10,9 @@ python tools/qa_audio.py
   - разнос голос/подложка в речи вне 10–20 дБ;
   - «поломки» музыки: наша обработка меняет громкость подложки больше чем на 6 дБ за 60 мс
     (пампинг сайдчейна, дыры от просадок) — сравнение bed_ducked с исходной bed_norm0;
-  - длительность микса ≠ длительности голоса.
+  - длительность микса ≠ длительности голоса;
+  - шипение, добавленное обработкой: доля 12–20 кГц в голосе выше, чем в резе (.tmp/cut48k.wav),
+    больше чем на 6 дБ (так звучала склейка anullsrc + concat — «пшшш» под всей речью).
 """
 import subprocess
 import sys
@@ -87,6 +89,30 @@ if jumps:
 
 sep = np.median(ev[speech] - eb[speech]) if speech.any() else 0
 (notes if 10 <= sep <= 20 else fails).append(f"разнос голос/подложка в речи {sep:.1f} дБ")
+
+# спектр голоса против реза: обработка не должна добавлять верх
+def hf_share(path):
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-af",
+                          "aformat=channel_layouts=stereo,pan=mono|c0=0.5*c0+0.5*c1", "-ar", "48000", "-f", "f32le", "-"],
+                         cwd=ROOT, capture_output=True).stdout
+    x = np.frombuffer(raw, dtype=np.float32)
+    n = 4800
+    k = len(x) // n
+    fr = x[: k * n].reshape(k, n)
+    fr = fr[np.sqrt((fr ** 2).mean(1)) > 10 ** (-40 / 20) * (np.abs(x).max() + 1e-9)]  # только речь
+    X = (np.abs(np.fft.rfft(fr * np.hanning(n), axis=1)) ** 2).sum(0)
+    f = np.fft.rfftfreq(n, 1 / 48000)
+    return 10 * np.log10(X[(f >= 12000) & (f < 20000)].sum() / X.sum())
+
+
+import os
+if os.path.exists(os.path.join(ROOT, ".tmp", "cut48k.wav")):
+    h_cut, h_voice = hf_share(".tmp/cut48k.wav"), hf_share(".tmp/voice.wav")
+    if h_voice - h_cut > 6:
+        fails.append(f"обработка добавила шипение: доля 12–20 кГц {h_voice:.1f} дБ против {h_cut:.1f} в резе "
+                     "(дорожку голоса собирай tools/voice_track.py)")
+    else:
+        notes.append(f"верх голоса 12–20 кГц: {h_voice:.1f} дБ (рез {h_cut:.1f}) — шипения не добавлено")
 
 dv, dm = len(voice) / 16000, len(mix) / 16000
 if abs(dv - dm) > 0.05:

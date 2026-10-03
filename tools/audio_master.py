@@ -13,6 +13,9 @@ python tools/audio_master.py [--bed -24] [--drop 49.3] [--drop-cue endIn]
   --bed-free  на сколько дБ поднять подложку там, где голоса нет дольше 1.5 с (по умолчанию 3;
               плавно, рампа 1.5 с — ступенька больше 6 дБ за секунду звучит как «музыка умерла»)
   --segments  файл стыков фраз для просадки подложки (по умолчанию .tmp/segments.json)
+  --duck      smooth (по умолчанию): ровное приглушение под речью, рампы 0.4 с, без просадок на стыках;
+              sidechain: старый компрессор (только под ритмичный бит — на тягучих треках «качает»)
+  --duck-db   глубина плавного приглушения, дБ (по умолчанию 8 → разнос ≈ 15 дБ при --bed −21)
   Шумодав: пол шума голоса меряется ПОСЛЕ подъёма до −14 LUFS. Выше −50 dBFS → afftdn
   (тихая запись +17 дБ поднимает и шипение комнаты, под приглушённой музыкой оно слышно).
   Голос: .tmp/cut48k_pad.wav, если он есть (рез, дополненный тишиной до длины видео
@@ -148,7 +151,8 @@ if __name__ == "__main__":
         t += s["b"] - s["a"]
         if s.get("span") != "pad":  # вставки без речи (стоп-кадр, сравнение) — не стык фраз
             ends.append(t)
-    wins = "+".join(f"clip((t-{e - 0.25:.3f})/0.05,0,1)*clip(({e + 0.05:.3f}-t)/0.05,0,1)" for e in ends[:-1])
+    smooth = not ("--duck" in sys.argv and sys.argv[sys.argv.index("--duck") + 1] == "sidechain")
+    wins = "" if smooth else "+".join(f"clip((t-{e - 0.25:.3f})/0.05,0,1)*clip(({e + 0.05:.3f}-t)/0.05,0,1)" for e in ends[:-1])
     # где голоса нет дольше 1.5 с, подложка плавно поднимается на --bed-free дБ (рампа 1 с)
     free_db = float(sys.argv[sys.argv.index("--bed-free") + 1]) if "--bed-free" in sys.argv else 3.0
     loud = db + g > -45
@@ -171,21 +175,52 @@ if __name__ == "__main__":
          f"volume='(1-0.6*min(1,{wins or 0}))*(1+{K:.4f}*min(1,{ramps}))':eval=frame",
          "-c:a", "pcm_s24le", ".tmp/bed_norm.wav"])
 
-    # --- сайдчейн: apad на оба входа, потом atrim — иначе хвост пропадает ---
-    # два прохода вместо одного графа с двумя выходами: на ffmpeg 6.0 такой граф зависал
-    graph = ("[1:a]aformat=channel_layouts=stereo,apad=pad_dur=2,asplit=2[key][vo];"
-             # ключ сайдчейна: тихие окончания слов поднимаем до уровня речи и держим 300 мс,
-             # иначе подложка всплывает на «-нов», «-сь» и маскирует их
-             "[key]compand=attacks=0.005:decays=0.35:points=-90/-90|-60/-60|-52/-6|0/-4[sc];"
-             "[0:a]aformat=channel_layouts=stereo,apad=pad_dur=2[bd];"
-             f"[bd][sc]sidechaincompress=threshold=0.10:ratio=3:attack=20:release=380,atrim=0:{vdur:.4f}[duck];"
-             f"[vo]atrim=0:{vdur:.4f}[v2];")
-    run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
-         graph + "[v2][duck]amix=inputs=2:normalize=0:duration=first[mix]",
-         "-map", "[mix]", "-c:a", "pcm_s24le", ".tmp/mix_raw.wav"])
-    run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
-         graph + "[v2]anullsink",
-         "-map", "[duck]", "-c:a", "pcm_s24le", ".tmp/bed_ducked.wav"])
+    if "--duck" in sys.argv and sys.argv[sys.argv.index("--duck") + 1] == "sidechain":
+        # --- сайдчейн: apad на оба входа, потом atrim — иначе хвост пропадает ---
+        # два прохода вместо одного графа с двумя выходами: на ffmpeg 6.0 такой граф зависал
+        graph = ("[1:a]aformat=channel_layouts=stereo,apad=pad_dur=2,asplit=2[key][vo];"
+                 # ключ сайдчейна: тихие окончания слов поднимаем до уровня речи и держим 300 мс,
+                 # иначе подложка всплывает на «-нов», «-сь» и маскирует их
+                 "[key]compand=attacks=0.005:decays=0.35:points=-90/-90|-60/-60|-52/-6|0/-4[sc];"
+                 "[0:a]aformat=channel_layouts=stereo,apad=pad_dur=2[bd];"
+                 f"[bd][sc]sidechaincompress=threshold=0.10:ratio=3:attack=20:release=380,atrim=0:{vdur:.4f}[duck];"
+                 f"[vo]atrim=0:{vdur:.4f}[v2];")
+        run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
+             graph + "[v2][duck]amix=inputs=2:normalize=0:duration=first[mix]",
+             "-map", "[mix]", "-c:a", "pcm_s24le", ".tmp/mix_raw.wav"])
+        run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
+             graph + "[v2]anullsink",
+             "-map", "[duck]", "-c:a", "pcm_s24le", ".tmp/bed_ducked.wav"])
+    else:
+        # ПЛАВНОЕ приглушение (по умолчанию): под речью подложка ровно ниже на DUCK дБ, спуск/подъём 0.4 с.
+        # Сайдчейн-компрессор на тягучих треках «качает» ±5–10 дБ за доли секунды — звучит как поломка
+        # (nnzalupa, slowed-трек). Под битом это не слышно — тогда можно --duck sidechain.
+        duck_db = float(sys.argv[sys.argv.index("--duck-db") + 1]) if "--duck-db" in sys.argv else 8.0
+        sp, i, regs = db + g > -45, 0, []
+        while i < len(sp):
+            if sp[i]:
+                j = i
+                while j < len(sp) and sp[j]:
+                    j += 1
+                a_, b_ = i * 0.01, j * 0.01
+                if regs and a_ - regs[-1][1] < 1.2:  # паузы короче 1.2 с не выпускают музыку наверх
+                    regs[-1] = (regs[-1][0], b_)
+                else:
+                    regs.append((a_, b_))
+                i = j
+            else:
+                i += 1
+        regs = [(a_, b_) for a_, b_ in regs if b_ - a_ > 0.15]
+        D = 1 - 10 ** (-duck_db / 20)
+        under = "+".join(f"clip((t-{a_ - 0.4:.3f})/0.4,0,1)*clip(({b_ + 0.4:.3f}-t)/0.4,0,1)" for a_, b_ in regs) or "0"
+        print("речь (приглушение " + f"{duck_db:.0f} дБ): " + ", ".join(f"{a_:.1f}–{b_:.1f}" for a_, b_ in regs))
+        run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-af",
+             f"aformat=channel_layouts=stereo,volume='1-{D:.4f}*min(1,{under})':eval=frame,apad=pad_dur=2,"
+             f"atrim=0:{vdur:.4f}", "-ac", "2", "-c:a", "pcm_s24le", ".tmp/bed_ducked.wav"])
+        run(["ffmpeg", "-y", "-v", "error", "-i", VOICE, "-i", ".tmp/bed_ducked.wav", "-filter_complex",
+             f"[0:a]aformat=channel_layouts=stereo,apad=pad_dur=2,atrim=0:{vdur:.4f}[v2];"
+             "[1:a]aformat=channel_layouts=stereo[bd];[v2][bd]amix=inputs=2:normalize=0:duration=first[mix]",
+             "-map", "[mix]", "-c:a", "pcm_s24le", ".tmp/mix_raw.wav"])
     loudnorm2(".tmp/mix_raw.wav", MIX)
 
     mi, mtp = measure(MIX)

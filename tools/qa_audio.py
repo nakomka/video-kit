@@ -8,6 +8,8 @@ python tools/qa_audio.py
     12–15 дБ с рампой; провал 20 дБ за секунду — ошибка);
   - шум: пол шума голоса в паузах между словами выше −50 dBFS (шипение тихой записи после подъёма);
   - разнос голос/подложка в речи вне 10–20 дБ;
+  - «поломки» музыки: наша обработка меняет громкость подложки больше чем на 6 дБ за 60 мс
+    (пампинг сайдчейна, дыры от просадок) — сравнение bed_ducked с исходной bed_norm0;
   - длительность микса ≠ длительности голоса.
 """
 import subprocess
@@ -69,6 +71,19 @@ if len(idx):
         floor = float(np.percentile(gaps, 30))
         (fails if floor > -50 else notes).append(f"пол шума голоса в паузах {floor:.1f} dBFS"
                                                 + (" — нужен шумодав" if floor > -50 else ""))
+
+# рывки громкости, внесённые обработкой (не сам трек): усиление = ducked − norm0, окна 20 мс
+def env20(x):
+    k = len(x) // 320
+    return 20 * np.log10(np.maximum(np.sqrt((x[: k * 320].reshape(k, 320) ** 2).mean(1)), 1e-9))
+b0, b1 = env20(load(".tmp/bed_norm0.wav")), env20(bed)
+k = min(len(b0), len(b1))
+gain = np.convolve(b1[:k] - b0[:k], np.ones(3) / 3, mode="same")
+ok = b0[:k] > -45
+jumps = [i for i in range(3, k - 3) if ok[i] and ok[i + 3] and abs(gain[i + 3] - gain[i]) > 6]
+if jumps:
+    fails.append(f"рывки громкости музыки ({len(jumps)} шт., первый {jumps[0] * 0.02:.2f} с) — пампинг/дыры, "
+                 "нужно плавное приглушение (--duck smooth)")
 
 sep = np.median(ev[speech] - eb[speech]) if speech.any() else 0
 (notes if 10 <= sep <= 20 else fails).append(f"разнос голос/подложка в речи {sep:.1f} дБ")

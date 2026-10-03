@@ -32,9 +32,11 @@ for span, a, b in bounds:
             pieces.append(cur)
         cur = (span, a, b)
 pieces.append(cur)
+heard = []
 for span, a, b in pieces:
     txt = transcribe_piece(wav, max(0, a - 0.25), min(total, b + 0.25), "vc")
     print(f"  [{a:6.2f}-{b:6.2f}] {span:10s} {txt}")
+    heard.append((a, b, txt))
 
 # остаток тишины: самые длинные участки ниже порога на смонтированной дорожке
 db = envelope(wav)
@@ -44,3 +46,28 @@ gaps = sorted(((b - a) * HOP, a * HOP) for a, b in runs(quiet) if a > 0 and b < 
 print(f"длительность {total:.3f} с; самые длинные паузы (с усилением {g} дБ):")
 for d, at in gaps[-6:][::-1]:
     print(f"  {d*1000:5.0f} мс @ {at:.2f}")
+
+# ПОВТОРЫ И ФАЛЬСТАРТЫ: соседние куски начинаются одинаково («Отдаю абсолют…» → «Отдаю абсолютно…»),
+# либо кусок распознаётся абракадаброй, похожей на начало следующего. Whisper по целому файлу их
+# склеивает в одну фразу — поэтому сравниваем куски по буквам.
+import difflib
+import re as _re
+
+
+def _letters(t, n=14):
+    return _re.sub(r"[^а-яёa-z]", "", t.lower())[:n]
+
+
+bad = 0
+for (a1, b1, t1), (a2, b2, t2) in zip(heard, heard[1:]):
+    x, y = _letters(t1), _letters(t2)
+    if len(x) >= 6 and len(y) >= 6 and difflib.SequenceMatcher(None, x, y).ratio() >= 0.45:
+        bad += 1
+        print(f"  ✗ ПОВТОР/ФАЛЬСТАРТ? [{a1:.2f}-{b1:.2f}] «{t1[:40]}» ≈ [{a2:.2f}-{b2:.2f}] «{t2[:40]}» — "
+              "послушай и выкинь неудачный заход")
+for a1, b1, t1 in heard:
+    words = _re.findall(r"[а-яёa-z]+", t1.lower())
+    if len(words) >= 4 and len(set(words)) <= len(words) / 2:
+        bad += 1
+        print(f"  ✗ кусок [{a1:.2f}-{b1:.2f}] распознан с повтором «{t1[:40]}» — вероятен неудачный дубль")
+print("ПОВТОРЫ: " + ("не найдены" if not bad else f"{bad} подозрительных места — разберись до графики"))

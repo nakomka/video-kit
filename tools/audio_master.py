@@ -10,12 +10,19 @@ python tools/audio_master.py [--bed -24] [--drop 49.3] [--drop-cue endIn]
 
   --drop      время дропа в треке; без него берётся .tmp/music_drop.txt (синтез) или ищется по громкости
   --drop-cue  метка из cues.json, на которую садится дроп (по умолчанию endIn — вход энд-карда)
+  --bed-free  на сколько дБ поднять подложку там, где голоса нет дольше 1.5 с (по умолчанию 3;
+              плавно, рампа 1.5 с — ступенька больше 6 дБ за секунду звучит как «музыка умерла»)
+  --segments  файл стыков фраз для просадки подложки (по умолчанию .tmp/segments.json)
+  Шумодав: пол шума голоса меряется ПОСЛЕ подъёма до −14 LUFS. Выше −50 dBFS → afftdn
+  (тихая запись +17 дБ поднимает и шипение комнаты, под приглушённой музыкой оно слышно).
   Голос: .tmp/cut48k_pad.wav, если он есть (рез, дополненный тишиной до длины видео
   со стоп-кадром энд-карда), иначе .tmp/cut48k.wav.
 """
 import json
 import os
 import re
+
+import numpy as np
 import subprocess
 import sys
 
@@ -89,7 +96,25 @@ if __name__ == "__main__":
     r = ff(["-i", VOICE_IN, "-af", "highpass=f=80,ebur128", "-f", "null", "-"])
     in_i = float(re.findall(r"I:\s+(-?[\d.]+) LUFS", r.stderr)[-1])
     g = TARGET - in_i + 0.5
-    pre = (f"highpass=f=80,volume={g:.2f}dB,aresample=192000,"
+    # пол шума голоса после подъёма (цифровую тишину дополнений не считаем)
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", VOICE_IN, "-ac", "1", "-ar", "16000", "-f", "f32le", "-"],
+                         cwd=ROOT, capture_output=True).stdout
+    x = np.frombuffer(raw, dtype=np.float32)
+    k = len(x) // 160
+    db = 20 * np.log10(np.maximum(np.sqrt((x[: k * 160].reshape(k, 160) ** 2).mean(1)), 1e-9))
+    # пол шума — из разбора исходников (.tmp/env*.json, там есть тишина), а не из реза:
+    # в резе почти сплошная речь, её 10-й перцентиль — это речь, не шум
+    import glob
+    floors = [load_json(os.path.relpath(f, ROOT))["floor"] for f in glob.glob(os.path.join(ROOT, ".tmp", "env*.json"))]
+    floor = max(floors) if floors else float(np.percentile(db[db > -100], 2))
+    post = floor + g
+    dn = ""
+    if post > -50:
+        nr = min(20.0, max(6.0, post + 56))
+        dn = f"afftdn=nr={nr:.0f}:nf={max(-80, floor):.0f}:tn=1,"
+    print(f"голос: пол шума {floor:.1f} dBFS, после подъёма {post:.1f} dBFS → "
+          + (f"шумодав afftdn nr={nr:.0f}" if dn else "шумодав не нужен"))
+    pre = (f"{dn}highpass=f=80,volume={g:.2f}dB,aresample=192000,"
            f"alimiter=limit=0.79:attack=3:release=60:level=false,aresample=48000")
     m = loudnorm2(VOICE_IN, VOICE, pre=pre)
     vi, vtp = measure(VOICE)
@@ -117,14 +142,34 @@ if __name__ == "__main__":
 
     # защита окончаний: на каждом стыке фраз (конец сегмента реза) подложка плавно проседает на 8 дБ
     # за 0.2 с до конца слова и до 0.05 с после — удары трека не маскируют «-нов», «-сь»
-    segs = load_json(".tmp/segments.json")
+    segs = load_json(sys.argv[sys.argv.index("--segments") + 1] if "--segments" in sys.argv else ".tmp/segments.json")
     ends, t = [], 0.0
     for s in segs:
         t += s["b"] - s["a"]
-        ends.append(t)
+        if s.get("span") != "pad":  # вставки без речи (стоп-кадр, сравнение) — не стык фраз
+            ends.append(t)
     wins = "+".join(f"clip((t-{e - 0.25:.3f})/0.05,0,1)*clip(({e + 0.05:.3f}-t)/0.05,0,1)" for e in ends[:-1])
+    # где голоса нет дольше 1.5 с, подложка плавно поднимается на --bed-free дБ (рампа 1 с)
+    free_db = float(sys.argv[sys.argv.index("--bed-free") + 1]) if "--bed-free" in sys.argv else 3.0
+    loud = db + g > -45
+    free, i = [], 0
+    while i < len(loud):
+        if not loud[i]:
+            j = i
+            while j < len(loud) and not loud[j]:
+                j += 1
+            if (j - i) * 0.01 >= 1.5:
+                free.append((i * 0.01, j * 0.01))
+            i = j
+        else:
+            i += 1
+    R, K = 1.5, 10 ** (free_db / 20) - 1  # рампа 1.5 с: вместе с приглушением под голос провал ≤ 14 дБ
+    ramps = "+".join((("1" if a < 0.05 else f"clip((t-{a:.3f})/{R},0,1)") + "*"
+                      + ("1" if b > vdur - 0.05 else f"clip(({b - 0.3:.3f}-t)/{R},0,1)")) for a, b in free) or "0"
+    print("без голоса: " + (", ".join(f"{a:.1f}–{b:.1f}" for a, b in free) or "нет") + f" → подложка +{free_db:.0f} дБ")
     run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm0.wav", "-af",
-         f"volume='1-0.6*min(1,{wins})':eval=frame", "-c:a", "pcm_s24le", ".tmp/bed_norm.wav"])
+         f"volume='(1-0.6*min(1,{wins or 0}))*(1+{K:.4f}*min(1,{ramps}))':eval=frame",
+         "-c:a", "pcm_s24le", ".tmp/bed_norm.wav"])
 
     # --- сайдчейн: apad на оба входа, потом atrim — иначе хвост пропадает ---
     # два прохода вместо одного графа с двумя выходами: на ffmpeg 6.0 такой граф зависал

@@ -59,3 +59,17 @@ all_segs = merged
 total = sum(s["b"] - s["a"] for s in all_segs)
 save_json(".tmp/segments.json", all_segs)
 print(f"ИТОГО: {len(all_segs)} сегментов, {total:.2f} с")
+
+# неудачные заходы (tools/takes.py): интервал EDL не должен захватывать фальстарт или запинку
+if os.path.exists(os.path.join(TMP, "takes.json")):
+    bad = load_json(".tmp/takes.json")["bad"]
+    hits = 0
+    for sp in edl["spans"]:
+        for sid, a, b, why in bad:
+            ov = min(sp["out"], b) - max(sp["in"], a)
+            if sid == sp["src"] and ov > 0.5 * (b - a):
+                hits += 1
+                print(f"  ✗ {sp['id']} {sp['in']:.2f}-{sp['out']:.2f} захватывает {a:.2f}–{b:.2f}: {why}")
+    print("ДУБЛИ В EDL: " + ("чисто" if not hits else f"{hits} неудачных заходов — исправь EDL"))
+else:
+    print("ДУБЛИ В EDL: не проверено — сначала python tools/takes.py")

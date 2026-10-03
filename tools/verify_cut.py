@@ -70,4 +70,40 @@ for a1, b1, t1 in heard:
     if len(words) >= 4 and len(set(words)) <= len(words) / 2:
         bad += 1
         print(f"  ✗ кусок [{a1:.2f}-{b1:.2f}] распознан с повтором «{t1[:40]}» — вероятен неудачный дубль")
+# одна и та же фраза из 3+ слов дважды где угодно в резе (кроме стыка соседних кусков: они
+# распознаются с запасом 0.25 с и честно пересекаются на 1–2 словах)
+pos = {}
+for pi, (a1, b1, t1) in enumerate(heard):
+    w = _re.findall(r"[а-яёa-z0-9]+", t1.lower().replace("ё", "е"))
+    for wi in range(len(w) - 2):
+        pos.setdefault(tuple(w[wi:wi + 3]), []).append((pi, wi, len(w), a1))
+    for x, y in zip(w, w[1:]):
+        if x == y and len(x) > 1:
+            bad += 1
+            print(f"  ✗ ЗАПИНКА в [{a1:.2f}-{b1:.2f}]: «{x} {y}»")
+for g, occ in pos.items():
+    for (p1, w1, n1, t1), (p2, w2, n2, t2) in zip(occ, occ[1:]):
+        edge = p2 == p1 + 1 and w1 >= n1 - 5 and w2 <= 2
+        if not edge:
+            bad += 1
+            print(f"  ✗ ФРАЗА ДВАЖДЫ: «{' '.join(g)}» около {t1:.1f} с и {t2:.1f} с")
 print("ПОВТОРЫ: " + ("не найдены" if not bad else f"{bad} подозрительных места — разберись до графики"))
+
+# щелчки на стыках: скачок сигнала на границе сегмента против обычных соседних отсчётов
+import os as _os
+import subprocess as _sp
+import numpy as _np
+if _os.path.exists(".tmp/cut48k.wav"):
+    _x = _np.frombuffer(_sp.run(["ffmpeg", "-v", "error", "-i", ".tmp/cut48k.wav", "-ac", "1", "-f", "f32le", "-"],
+                                capture_output=True).stdout, dtype=_np.float32)
+    _d = _np.abs(_np.diff(_x))
+    clicks, tt = 0, 0.0
+    for s_ in segs[:-1]:
+        tt += s_["b"] - s_["a"]
+        i = int(tt * 48000)
+        near = _d[max(0, i - 96):i + 96]
+        ref = _np.median(_d[max(0, i - 4800):i + 4800]) + 1e-6
+        if len(near) and near.max() / ref > 40 and near.max() > 0.02:
+            clicks += 1
+            print(f"  ✗ ЩЕЛЧОК на стыке {tt:.2f} с (скачок ×{near.max() / ref:.0f})")
+    print("ЩЕЛЧКИ: " + ("нет" if not clicks else f"{clicks} — удлини фейд на стыке"))

@@ -6,9 +6,15 @@
           apad на оба входа + atrim и сверка длительности (sidechaincompress теряет ~1 с хвоста)
   микс:   голос + подложка → двухпроходный loudnorm −14 LUFS, TP −1
 
-python tools/audio_master.py [--bed -24] [--drop 49.3]
+python tools/audio_master.py [--bed -24] [--drop 49.3] [--drop-cue endIn]
+
+  --drop      время дропа в треке; без него берётся .tmp/music_drop.txt (синтез) или ищется по громкости
+  --drop-cue  метка из cues.json, на которую садится дроп (по умолчанию endIn — вход энд-карда)
+  Голос: .tmp/cut48k_pad.wav, если он есть (рез, дополненный тишиной до длины видео
+  со стоп-кадром энд-карда), иначе .tmp/cut48k.wav.
 """
 import json
+import os
 import re
 import subprocess
 import sys
@@ -16,7 +22,7 @@ import sys
 from common import ROOT, load_json, run
 from music_fit import MUSIC
 
-VOICE_IN = ".tmp/cut48k.wav"
+VOICE_IN = ".tmp/cut48k_pad.wav" if os.path.exists(os.path.join(ROOT, ".tmp", "cut48k_pad.wav")) else ".tmp/cut48k.wav"
 VOICE = ".tmp/voice.wav"
 BED = ".tmp/bed.wav"
 MIX = ".tmp/audio_mixed.wav"
@@ -43,7 +49,7 @@ def loudnorm2(src, dst, pre="", target=TARGET, tp=TP, lra=11):
     af = (f"{chain}loudnorm=I={target}:TP={tp}:LRA={lra}:measured_I={m['input_i']}:measured_TP={m['input_tp']}"
           f":measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}"
           f":linear=true,aresample=48000")
-    run(["ffmpeg", "-y", "-v", "error", "-i", src, "-af", af, "-ar", "48000", "-c:a", "pcm_s24le", dst])
+    run(["ffmpeg", "-y", "-v", "error", "-i", src, "-af", af, "-ar", "48000", "-ac", "2", "-c:a", "pcm_s24le", dst])  # -ac 2: без раскладки каналов ffmpeg 6.0 падает
     return m
 
 
@@ -73,7 +79,7 @@ def find_drop(lo=46.0, hi=52.0):
 
 if __name__ == "__main__":
     cues = {}
-    exec(open(f"{ROOT}/project/compositions/fs2.html", encoding="utf-8").read().split("/*CUES:BEGIN*/")[1]
+    exec(open(f"{ROOT}/project/index.html", encoding="utf-8").read().split("/*CUES:BEGIN*/")[1]
          .split(";/*CUES:END*/")[0].replace("const C = ", "cues = ").replace("; const T0", "\nT0"), {}, cues)
     C = cues["cues"]
     vdur = duration(VOICE_IN)
@@ -92,11 +98,17 @@ if __name__ == "__main__":
     # --- музыка: срез по дропу ---
     if "--drop" in sys.argv:
         drop, gain = float(sys.argv[sys.argv.index("--drop") + 1]), 0
+    elif MUSIC == ".tmp/music.wav" and os.path.exists(os.path.join(ROOT, ".tmp", "music_drop.txt")):
+        drop, gain = float(open(os.path.join(ROOT, ".tmp", "music_drop.txt")).read()), 0
     else:
         drop, gain = find_drop()
     # дроп — сразу ПОСЛЕ финальной фразы, на вход CTA: на самом слове он глушил «окупилось»
-    off = drop - C["s9In"]
-    print(f"дроп трека {drop:.2f} с (+{gain:.1f} дБ), вход CTA {C['s9In']:.2f} с → старт трека {off:.2f} с")
+    cue = sys.argv[sys.argv.index("--drop-cue") + 1] if "--drop-cue" in sys.argv else "endIn"
+    off = drop - C[cue]
+    if off < 0:
+        raise SystemExit(f"дроп трека {drop:.2f} с раньше метки {cue} ({C[cue]:.2f} с): нужен трек длиннее "
+                         f"(make_music.py --drop {C[cue] + 0.6:.1f})")
+    print(f"дроп трека {drop:.2f} с (+{gain:.1f} дБ), {cue} {C[cue]:.2f} с → старт трека {off:.2f} с")
     fade_out = 1.2
     run(["ffmpeg", "-y", "-v", "error", "-ss", f"{off:.3f}", "-t", f"{vdur:.3f}", "-i", MUSIC,
          "-af", f"afade=t=in:d=0.4,afade=t=out:st={vdur - fade_out:.3f}:d={fade_out},aresample=48000",
@@ -115,18 +127,20 @@ if __name__ == "__main__":
          f"volume='1-0.6*min(1,{wins})':eval=frame", "-c:a", "pcm_s24le", ".tmp/bed_norm.wav"])
 
     # --- сайдчейн: apad на оба входа, потом atrim — иначе хвост пропадает ---
+    # два прохода вместо одного графа с двумя выходами: на ffmpeg 6.0 такой граф зависал
+    graph = ("[1:a]aformat=channel_layouts=stereo,apad=pad_dur=2,asplit=2[key][vo];"
+             # ключ сайдчейна: тихие окончания слов поднимаем до уровня речи и держим 300 мс,
+             # иначе подложка всплывает на «-нов», «-сь» и маскирует их
+             "[key]compand=attacks=0.005:decays=0.35:points=-90/-90|-60/-60|-52/-6|0/-4[sc];"
+             "[0:a]aformat=channel_layouts=stereo,apad=pad_dur=2[bd];"
+             f"[bd][sc]sidechaincompress=threshold=0.10:ratio=3:attack=20:release=380,atrim=0:{vdur:.4f}[duck];"
+             f"[vo]atrim=0:{vdur:.4f}[v2];")
     run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
-         "[1:a]aformat=channel_layouts=stereo,apad=pad_dur=2,asplit=2[key][vo];"
-         # ключ сайдчейна: тихие окончания слов поднимаем до уровня речи и держим 300 мс,
-         # иначе подложка всплывает на «-нов», «-сь» и маскирует их
-         "[key]compand=attacks=0.005:decays=0.35:points=-90/-90|-60/-60|-52/-6|0/-4[sc];"
-         "[0:a]apad=pad_dur=2[bd];"
-         f"[bd][sc]sidechaincompress=threshold=0.10:ratio=3:attack=20:release=380,atrim=0:{vdur:.4f}[duck];"
-         f"[vo]atrim=0:{vdur:.4f}[v2];"
-         "[duck]asplit=2[duck1][duck2];"
-         "[v2][duck1]amix=inputs=2:normalize=0:duration=first[mix]",
-         "-map", "[mix]", "-c:a", "pcm_s24le", ".tmp/mix_raw.wav",
-         "-map", "[duck2]", "-c:a", "pcm_s24le", ".tmp/bed_ducked.wav"])
+         graph + "[v2][duck]amix=inputs=2:normalize=0:duration=first[mix]",
+         "-map", "[mix]", "-c:a", "pcm_s24le", ".tmp/mix_raw.wav"])
+    run(["ffmpeg", "-y", "-v", "error", "-i", ".tmp/bed_norm.wav", "-i", VOICE, "-filter_complex",
+         graph + "[v2]anullsink",
+         "-map", "[duck]", "-c:a", "pcm_s24le", ".tmp/bed_ducked.wav"])
     loudnorm2(".tmp/mix_raw.wav", MIX)
 
     mi, mtp = measure(MIX)

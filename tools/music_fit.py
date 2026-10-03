@@ -2,14 +2,18 @@
 
 python tools/music_fit.py            # печать профиля (1 с) и кандидатов дропа
 Дроп = место наибольшего роста кратковременной громкости (3 с после против 3 с до).
-Смещение трека = время дропа − время финальной фразы (cues: fs2Paid).
+Смещение трека = время дропа − метка энд-карда (cues: endIn, другая — audio_master.py --drop-cue).
 """
 import re
 import subprocess
 
 from common import ROOT, load_json
 
-MUSIC = "7_NATION_ARMY_KARAOKE_THE_WHITE_STRIPES.mp3"
+import os
+
+# трек человека — первый .mp3/.wav/.m4a в папке проекта; нет трека — синтез tools/make_music.py
+_tracks = sorted(f for f in os.listdir(ROOT) if os.path.splitext(f)[1].lower() in (".mp3", ".wav", ".m4a"))
+MUSIC = _tracks[0] if _tracks else ".tmp/music.wav"
 
 
 def short_term(path):

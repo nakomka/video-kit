@@ -1,0 +1,62 @@
+/* promo-motion: красный / крем / чёрный, фиолетовый хайлайт, Unbounded капсом */
+:root {
+  --red: #e1251b;
+  --cream: #f3efe6;
+  --ink: #141414;
+  --violet: #9b7bff;
+  --yellow: #ffd23f;
+  --green: #3ddc84;
+  --muted: #6b6760;
+  --shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+  --r: 28px;
+}
+.disp {
+  font-family: "Unbounded", system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+.field {
+  position: absolute;
+  inset: 0;
+}
+.panel {
+  background: var(--cream);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+.hl {
+  display: inline-block;
+  padding: 0 18px;
+  background-image: linear-gradient(var(--hlc, #9b7bff), var(--hlc, #9b7bff));
+  background-repeat: no-repeat;
+  background-position: left 60%;
+  background-size: calc(var(--hl, 1) * 100%) 88%;
+}
+
+/* субтитры */
+.capbox {
+  position: absolute;
+  inset: 0;
+  font-family: "Unbounded", system-ui, sans-serif;
+}
+.cap {
+  position: absolute;
+  left: 50%;
+  top: 1500px;
+  padding: 20px 34px 24px;
+  background: var(--cream);
+  border-radius: 22px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  font-size: 54px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  visibility: hidden;
+}
+.cw {
+  display: inline-block;
+}

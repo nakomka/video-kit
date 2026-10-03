@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles-promo.css" />
+      <style>
+        @font-face { font-family: "Unbounded"; src: url("assets/fonts/Unbounded.ttf") format("truetype"); font-weight: 200 900; }
+        #s9-root { position: absolute; inset: 0; overflow: hidden; perspective: 1800px; font-family: system-ui, -apple-system, sans-serif; }
+        #s9-head { position: absolute; left: 0; right: 0; top: 170px; height: 160px; }
+        .s9-h { position: absolute; left: 0; right: 0; top: 0; text-align: center; font-size: 104px; font-weight: 900; color: #fff; }
+        #s9-phone { position: absolute; left: 240px; top: 380px; width: 600px; height: 1200px; border-radius: 78px; border: 22px solid var(--ink); box-shadow: 0 40px 120px rgba(0,0,0,0.45); transform-style: preserve-3d; }
+        #s9-screen { position: absolute; inset: 0; border-radius: 56px; overflow: hidden; }
+        #s9-notch { position: absolute; left: 50%; top: 18px; width: 150px; height: 40px; margin-left: -75px; border-radius: 20px; background: var(--ink); z-index: 5; }
+        /* Instagram Reels поверх видео */
+        #s9-ig-top { position: absolute; left: 34px; top: 80px; color: #fff; font-size: 40px; font-weight: 800; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        #s9-ig-side { position: absolute; right: 26px; bottom: 260px; display: flex; flex-direction: column; gap: 34px; }
+        .s9-ico { width: 58px; height: 58px; }
+        #s9-ig-bottom { position: absolute; left: 0; right: 0; bottom: 0; padding: 120px 30px 56px; background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.65)); color: #fff; }
+        #s9-ig-user { display: flex; align-items: center; gap: 18px; font-size: 30px; font-weight: 700; }
+        .s9-ava { width: 66px; height: 66px; border-radius: 50%; border: 3px solid #fff; overflow: hidden; flex: none; }
+        .s9-ava img { width: 100%; height: 100%; object-fit: cover; }
+        #s9-ig-btn { position: relative; padding: 10px 22px 12px; border: 3px solid #fff; border-radius: 14px; font-size: 26px; font-weight: 700; white-space: nowrap; }
+        #s9-ig-btn2 { position: absolute; inset: -3px; border-radius: 14px; background: #fff; color: var(--ink); display: flex; align-items: center; justify-content: center; }
+        #s9-ig-cap { margin-top: 18px; font-size: 26px; opacity: 0.9; }
+        /* Telegram-канал */
+        #s9-tg { position: absolute; inset: 0; background: #ffffff; color: #111; }
+        #s9-tg-bar { height: 150px; background: #2aabee; }
+        #s9-tg-ava { position: absolute; left: 50%; top: 70px; width: 230px; height: 230px; margin-left: -115px; border-radius: 50%; overflow: hidden; border: 8px solid #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.18); background: #fff url(assets/logo.jpg) center / cover no-repeat; }
+        
+        #s9-tg-name { position: absolute; left: 30px; right: 30px; top: 330px; text-align: center; font-size: 42px; font-weight: 800; line-height: 1.15; }
+        #s9-tg-sub { position: absolute; left: 30px; right: 30px; top: 445px; text-align: center; font-size: 30px; color: #6d7883; line-height: 1.25; }
+        #s9-tg-kind { position: absolute; left: 0; right: 0; top: 540px; text-align: center; font-size: 26px; color: #2aabee; font-weight: 600; }
+        .s9-post { position: absolute; left: 34px; right: 90px; height: 120px; border-radius: 24px; background: #eef3f7; }
+        #s9-tg-btn { position: absolute; left: 34px; right: 34px; bottom: 50px; height: 110px; border-radius: 22px; background: #2aabee; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 800; letter-spacing: 0.02em; }
+        #s9-tg-btn2 { position: absolute; inset: 0; border-radius: 22px; background: #3ddc84; display: flex; align-items: center; justify-content: center; }
+        .s9-tap { position: absolute; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; border: 8px solid #fff; }
+        #s9-tap2 { border-color: var(--ink); }
+        /* значки сетей */
+        .s9-badge { position: absolute; width: 190px; height: 190px; border-radius: 46px; box-shadow: var(--shadow); }
+        #s9-igb { left: 120px; top: 1330px; }
+        #s9-tgb { right: 110px; top: 1300px; border-radius: 50%; }
+      </style>
+      <div id="s9-root" data-composition-id="s9" data-width="1080" data-height="1920">
+        <div id="s9-head">
+          <div class="s9-h disp" id="s9-h1" data-layout-allow-overlap>подпишись</div>
+          <div class="s9-h disp" id="s9-h2" data-layout-allow-overlap>телеграм</div>
+        </div>
+        <div id="s9-phone" data-layout-allow-overflow>
+          <div id="s9-screen">
+            <div id="s9-ig-top">Reels</div>
+            <div id="s9-ig-side">
+              <svg class="s9-ico" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C1 8.6 3 5 6.6 5c2 0 3.4 1.2 4.4 2.6C12 6.2 13.4 5 15.4 5 19 5 21 8.6 19.6 11.8 17.5 16.4 12 21 12 21z" fill="none" stroke="#fff" stroke-width="2" /></svg>
+              <svg class="s9-ico" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3.2-6.4L21 4l-1.3 4.2A8 8 0 0 1 20 12z" fill="none" stroke="#fff" stroke-width="2" /></svg>
+              <svg class="s9-ico" viewBox="0 0 24 24"><path d="M3 11 21 4l-6 17-3-7z" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round" /></svg>
+            </div>
+            <div id="s9-ig-bottom">
+              <div id="s9-ig-user">
+                <div class="s9-ava"><img src="assets/logo.jpg" alt="" /></div>
+                <span>ИИ Монтаж</span>
+                <div id="s9-ig-btn">Подписаться<div id="s9-ig-btn2">Вы подписаны</div></div>
+              </div>
+              <div id="s9-ig-cap">Набор для монтажа нейросетью…</div>
+            </div>
+            <div class="s9-tap" id="s9-tap1" style="left: 420px; top: 1020px"></div>
+            <div id="s9-tg">
+              <div id="s9-tg-bar"></div>
+              <div id="s9-tg-ava"></div>
+              <div id="s9-tg-name">Освобождаем руки</div>
+              <div id="s9-tg-sub">Внедрение ИИ<br />для монтажа</div>
+              <div id="s9-tg-kind">канал</div>
+              <div class="s9-post" style="top: 620px"></div>
+              <div class="s9-post" style="top: 760px; right: 160px"></div>
+              <div id="s9-tg-btn">ПОДПИСАТЬСЯ<div id="s9-tg-btn2">✓ ВЫ ПОДПИСАНЫ</div></div>
+              <div class="s9-tap" id="s9-tap2" style="left: 278px; top: 1050px"></div>
+            </div>
+            <div id="s9-notch"></div>
+          </div>
+        </div>
+        <img class="s9-badge" id="s9-igb" src="assets/instagram.svg" alt="" />
+        <img class="s9-badge" id="s9-tgb" src="assets/telegram.png" alt="" />
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 25.2667;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s10In - T0;
+          const tl = gsap.timeline({ paused: true });
+          // въезд телефона синхронно с окном спикера в корне (y 1500 → 0, 0.55 c, power3.out)
+          tl.fromTo("#s9-phone", { y: 1500 }, { y: 0, duration: 0.55, ease: "power3.out" }, 0.05);
+          tl.set("#s9-tg", { xPercent: 100 }, 0);
+          tl.fromTo("#s9-h1", { autoAlpha: 0, scale: 1.8 }, { autoAlpha: 1, scale: 1, duration: 0.28, ease: "power4.out" }, 0.25);
+          tl.fromTo("#s9-igb", { autoAlpha: 0, scale: 0.3, rotation: -30 }, { autoAlpha: 1, scale: 1, rotation: -10, duration: 0.3, ease: "back.out(2.2)" }, 0.55);
+          tl.set("#s9-ig-btn2", { autoAlpha: 0 }, 0);
+          // «подпишетесь» — тап по кнопке
+          tl.fromTo("#s9-tap1", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.15 }, L("igSub") - 0.05);
+          tl.to("#s9-tap1", { autoAlpha: 0, scale: 1.6, duration: 0.25 }, L("igSub") + 0.1);
+          tl.to("#s9-ig-btn", { scale: 0.9, duration: 0.08, yoyo: true, repeat: 1 }, L("igSub"));
+          tl.set("#s9-ig-btn2", { autoAlpha: 1 }, L("igSub") + 0.1);
+          // «перейдёте в телеграм-канал» — экран листается на канал
+          tl.to("#s9-h1", { autoAlpha: 0, y: -40, duration: 0.18 }, L("tgGo"));
+          tl.fromTo("#s9-h2", { autoAlpha: 0, y: 50 }, { autoAlpha: 1, y: 0, duration: 0.25, ease: "back.out(2)" }, L("tgGo") + 0.1);
+          tl.to("#s9-tg", { xPercent: 0, duration: 0.4, ease: "power3.inOut" }, L("tgGo"));
+          tl.to("#s9-igb", { autoAlpha: 0, scale: 0.5, duration: 0.2 }, L("tgGo"));
+          tl.set("#s9-ig-top, #s9-ig-side, #s9-ig-bottom, #s9-tap1", { autoAlpha: 0 }, L("tgGo") + 0.42);
+          tl.fromTo("#s9-tgb", { autoAlpha: 0, scale: 0.3, rotation: 30 }, { autoAlpha: 1, scale: 1, rotation: 10, duration: 0.3, ease: "back.out(2.2)" }, L("tgGo") + 0.35);
+          // 3D-наклон, когда видео в экране уже закрыто каналом
+          tl.to("#s9-phone", { rotationY: -14, rotationX: 6, duration: 0.8, ease: "power2.out" }, L("tgGo") + 0.5);
+          tl.set("#s9-tg-btn2", { autoAlpha: 0 }, 0);
+          tl.fromTo("#s9-tap2", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.15 }, L("tgSub") - 0.05);
+          tl.to("#s9-tap2", { autoAlpha: 0, scale: 1.6, duration: 0.25 }, L("tgSub") + 0.1);
+          tl.to("#s9-tg-btn", { scale: 0.93, duration: 0.08, yoyo: true, repeat: 1 }, L("tgSub"));
+          tl.set("#s9-tg-btn2", { autoAlpha: 1 }, L("tgSub") + 0.1);
+          tl.to("#s9-phone, #s9-head, #s9-tgb", { autoAlpha: 0, y: -120, duration: 0.2, ease: "power2.in" }, END - 0.2);
+          window.__timelines["s9"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles-promo.css" />
+      <style>
+        @font-face { font-family: "Unbounded"; src: url("assets/fonts/Unbounded.ttf") format("truetype"); font-weight: 200 900; }
+        #s1-root { position: absolute; inset: 0; color: var(--cream); }
+        #s1-plate { position: absolute; left: 60px; top: 1180px; padding: 26px 34px 30px; background: var(--red); border-radius: 18px; box-shadow: var(--shadow); transform-origin: left center; }
+        #s1-a { font-size: 50px; font-weight: 800; }
+        #s1-b { margin-top: 18px; font-size: 104px; font-weight: 900; color: #fff; isolation: isolate; }
+      </style>
+      <div id="s1-root" data-composition-id="s1" data-width="1080" data-height="1920">
+        <div id="s1-plate">
+          <div id="s1-a" class="disp">Этот ролик смонтировала</div>
+          <div id="s1-b" class="disp"><span class="hl" id="s1-hl">нейросеть</span></div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 0.0;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s2In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s1-plate", { autoAlpha: 0, scaleX: 0.2 }, { autoAlpha: 1, scaleX: 1, duration: 0.3, ease: "power4.out" }, 0.05);
+          tl.fromTo("#s1-a", { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.2 }, 0.15);
+          tl.fromTo("#s1-b", { autoAlpha: 0, yPercent: 60 }, { autoAlpha: 1, yPercent: 0, duration: 0.28, ease: "back.out(2)" }, L("s1Neuro") - 0.1);
+          tl.fromTo("#s1-hl", { "--hl": 0 }, { "--hl": 1, duration: 0.3, ease: "power3.out" }, L("s1Neuro"));
+          tl.to("#s1-plate", { autoAlpha: 0, x: -80, duration: 0.18, ease: "power2.in" }, END - 0.18);
+          window.__timelines["s1"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

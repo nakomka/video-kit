@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles-promo.css" />
+      <style>
+        @font-face { font-family: "Unbounded"; src: url("assets/fonts/Unbounded.ttf") format("truetype"); font-weight: 200 900; }
+        #s11-root { position: absolute; inset: 0; font-family: system-ui, -apple-system, sans-serif; }
+        .s11-b { position: absolute; padding: 24px 34px 28px; border-radius: 34px; box-shadow: var(--shadow); font-size: 44px; font-weight: 700; display: flex; align-items: center; gap: 18px; }
+        #s11-b1 { left: 70px; top: 1130px; background: var(--cream); color: var(--ink); border-bottom-left-radius: 8px; transform-origin: left bottom; }
+        #s11-b1 .disp { font-size: 40px; font-weight: 900; color: var(--red); }
+        #s11-b2 { right: 70px; top: 1290px; background: #2aabee; color: #fff; border-bottom-right-radius: 8px; transform-origin: right bottom; }
+        #s11-ticks { font-size: 34px; opacity: 0.9; }
+        #s11-doc { width: 48px; height: 56px; }
+      </style>
+      <div id="s11-root" data-composition-id="s11" data-width="1080" data-height="1920">
+        <div class="s11-b" id="s11-b1"><span class="disp">ЛС</span> личные сообщения</div>
+        <div class="s11-b" id="s11-b2"><svg id="s11-doc" viewBox="0 0 48 56"><path d="M4 4 H30 L44 18 V52 H4 Z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round" /></svg>Инструкция <span id="s11-ticks">✓✓</span></div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 35.5333;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s12In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s11-b1", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.28, ease: "back.out(2.2)" }, L("s11Ls") - 0.08);
+          tl.fromTo("#s11-b2", { autoAlpha: 0, scale: 0.3 }, { autoAlpha: 1, scale: 1, duration: 0.28, ease: "back.out(2.2)" }, L("s11Send") + 0.2);
+          tl.to("#s11-b1, #s11-b2", { autoAlpha: 0, duration: 0.15 }, END - 0.15);
+          window.__timelines["s11"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles-promo.css" />
+      <style>
+        @font-face { font-family: "Unbounded"; src: url("assets/fonts/Unbounded.ttf") format("truetype"); font-weight: 200 900; }
+        #s2-root { position: absolute; inset: 0; color: var(--cream); overflow: hidden; }
+        #s2-wrap { position: absolute; left: 0; right: 0; top: 720px; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+        #s2-pre { font-size: 58px; font-weight: 700; }
+        #s2-word-box { position: relative; padding: 10px 10px; }
+        #s2-word { font-size: 122px; font-weight: 900; color: #fff; }
+        #s2-strike { position: absolute; left: -20px; right: -20px; top: 50%; height: 26px; margin-top: -13px; background: var(--ink); border-radius: 6px; transform-origin: left center; transform: rotate(-4deg); }
+        #s2-pill { margin-top: 30px; padding: 22px 40px 26px; border-radius: 999px; background: var(--ink); color: var(--cream); font-size: 50px; font-weight: 800; }
+      </style>
+      <div id="s2-root" data-composition-id="s2" data-width="1080" data-height="1920">
+        <div id="s2-wrap">
+          <div id="s2-pre" class="disp">Я не собираюсь</div>
+          <div id="s2-word-box"><div id="s2-word" class="disp">продавать</div><div id="s2-strike"></div></div>
+          <div id="s2-pill" class="disp">эту информацию</div>
+        </div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 1.7667;/*CUES:END*/
+          const L = (k) => C[k] - T0;
+          const END = C.s3In - T0;
+          const tl = gsap.timeline({ paused: true });
+          tl.fromTo("#s2-pre", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.2);
+          tl.fromTo("#s2-word", { autoAlpha: 0, scale: 2.2 }, { autoAlpha: 1, scale: 1, duration: 0.3, ease: "power4.out" }, L("s2Sell") - 0.08);
+          tl.fromTo("#s2-pill", { autoAlpha: 0, y: 60 }, { autoAlpha: 1, y: 0, duration: 0.28, ease: "back.out(2)" }, L("s2Strike") - 0.15);
+          tl.fromTo("#s2-strike", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: "power3.out" }, L("s2Strike") + 0.1);
+          tl.to("#s2-word", { color: "rgba(255,255,255,0.55)", duration: 0.2 }, L("s2Strike") + 0.2);
+          tl.to("#s2-wrap", { autoAlpha: 0, y: -60, duration: 0.18, ease: "power2.in" }, END - 0.18);
+          window.__timelines["s2"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

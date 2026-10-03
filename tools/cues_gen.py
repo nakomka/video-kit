@@ -18,7 +18,8 @@ from common import ROOT, load_json, norm_word, FPS
 WORDS = ".tmp/cut_words_flat.json"
 HTML = os.path.join(ROOT, "project", "index.html")
 COMP = os.path.join(ROOT, "project", "compositions")
-VIDEO = ".tmp/cut.mp4"
+# видео в проекте (может быть дополнено стоп-кадром под энд-кард), иначе рез
+VIDEO = "project/assets/cut.mp4" if os.path.exists(os.path.join(ROOT, "project", "assets", "cut.mp4")) else ".tmp/cut.mp4"
 
 cfg = load_json("cues.json")
 words = load_json(WORDS)
@@ -66,6 +67,11 @@ for name, c in cfg["clips"].items():
 
 # ---------- субтитры ----------
 cap = cfg["captions"]
+# цвета и шрифт субтитров: captions.accent / captions.ink / captions.font = {"family", "src"} в cues.json
+ACCENT, INK = cap.get("accent", "#d62828"), cap.get("ink", "#14161a")
+FONT = cap.get("font")
+FONT_CSS = (f'@font-face {{ font-family: "{FONT["family"]}"; src: url("{FONT["src"]}"); font-weight: 200 900; }} '
+            if FONT else "")
 text = [w["w"] for w in words]
 for fx in cap["fix"]:
     i = find(fx["word"], fx.get("n", 1))
@@ -119,7 +125,7 @@ captions = f'''<!doctype html>
     <!-- СГЕНЕРИРОВАНО tools/cues_gen.py (слова: .tmp/cut_words_flat.json, правки текста: cues.json → captions.fix). Руками не править. -->
     <template>
       <link rel="stylesheet" href="styles.css" />
-      <style>#captions-root {{ position: absolute; inset: 0; }}</style>
+      <style>{FONT_CSS}#captions-root {{ position: absolute; inset: 0; }}</style>
       <div id="captions-root" data-composition-id="captions" data-width="1080" data-height="1920">
         <div class="capbox">
 {chr(10).join(cap_html)}
@@ -134,8 +140,8 @@ captions = f'''<!doctype html>
             tl.fromTo(id, {{ autoAlpha: 0, xPercent: -50, yPercent: -50, y: 14 }}, {{ autoAlpha: 1, xPercent: -50, yPercent: -50, y: 0, duration: 0.12, ease: "power2.out" }}, c.s);
             c.t.forEach((t, j) => {{
               const w = "#cw" + k + "_" + j;
-              tl.set(w, {{ color: "#d62828" }}, t);
-              tl.set(w, {{ color: "#14161a" }}, j + 1 < c.t.length ? c.t[j + 1] : c.e);
+              tl.set(w, {{ color: "{ACCENT}" }}, t);
+              tl.set(w, {{ color: "{INK}" }}, j + 1 < c.t.length ? c.t[j + 1] : c.e);
             }});
             tl.set(id, {{ autoAlpha: 0 }}, c.e);
           }});
@@ -163,6 +169,10 @@ for fn in sorted(os.listdir(COMP)):
 
 # ---------- корень: data-start / data-duration у хостов ----------
 src = open(HTML, encoding="utf-8").read()
+# блок меток в корне (раскладка спикера живёт в корневом таймлайне, T0 = 0)
+src = re.sub(r"/\*CUES:BEGIN\*/.*?/\*CUES:END\*/",
+             "/*CUES:BEGIN*/const C = " + json.dumps(C, ensure_ascii=False) + "; const T0 = 0;/*CUES:END*/",
+             src, flags=re.S)
 for name, (s, d) in clips.items():
     pat = re.compile(r'(<[^>]*data-clip="%s"[^>]*>)' % re.escape(name), re.S)
     m = pat.search(src)

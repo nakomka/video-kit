@@ -4,9 +4,13 @@
 с такта 12 (24.0 с) — вход полной группы (бочка, малый, бас, октава в мелодии).
 Время дропа пишется в .tmp/music_drop.txt — его читает audio_master.py.
 
-python tools/make_music.py  ->  .tmp/music.wav
+python tools/make_music.py [--drop 44]  ->  .tmp/music.wav
+
+--drop — время входа полной группы в секундах (≈ метка энд-карда + 0.6 с), по умолчанию 24.
+При длинном интро (дроп позже 32 с) с 6-го такта добавляются бочка и бас на 1 и 3, чтобы ролик не провисал.
 """
 import os
+import sys
 import wave
 
 import numpy as np
@@ -16,8 +20,8 @@ SR = 48000
 BPM = 120
 BEAT = 60 / BPM
 BAR = 4 * BEAT
-BARS = 18
-DROP_BAR = 12
+DROP_BAR = round(float(sys.argv[sys.argv.index("--drop") + 1]) / BAR) if "--drop" in sys.argv else 12
+BARS = max(18, DROP_BAR + 2)
 rng = np.random.default_rng(7)
 N = int(SR * BARS * BAR) + SR
 L = np.zeros(N)
@@ -124,6 +128,10 @@ for bar in range(BARS):
         if bar >= 4:
             for b in (1, 3):
                 add(clap(), t0 + b * BEAT, gain=0.12)
+        if DROP_BAR >= 16 and 6 <= bar < DROP_BAR - 1:  # длинное интро: бочка и бас на 1 и 3
+            for b in (0, 2):
+                add(kick(), t0 + b * BEAT, gain=0.55)
+                add(pluck_bass(hz(root)), t0 + b * BEAT, gain=0.3)
         if bar == DROP_BAR - 1:  # подводка: дробь малым на последней доле
             for k in range(8):
                 add(snare(), t0 + 3 * BEAT + k * BEAT / 8, gain=0.08 + 0.03 * k)

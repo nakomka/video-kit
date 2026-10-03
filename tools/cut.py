@@ -13,7 +13,8 @@ segs = load_json(".tmp/segments.json")
 audio_only = "--audio" in sys.argv
 out = sys.argv[sys.argv.index("--audio") + 1] if audio_only else ".tmp/cut.mp4"
 
-srcs = sorted({s["src"] for s in segs}, key=int)
+# id исходника — номер («1») или имя файла без расширения («DJI_…»)
+srcs = sorted({s["src"] for s in segs}, key=lambda x: (0, int(x), "") if x.isdigit() else (1, 0, x))
 inp = {sid: k for k, sid in enumerate(srcs)}
 uses = defaultdict(int)
 for s in segs:

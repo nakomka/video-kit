@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Unbounded";
+        src: url("assets/fonts/Unbounded.ttf") format("truetype");
+        font-weight: 200 900;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #141414;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #141414;
+      }
+      /* фон под графикой: цвет меняется по сценам */
+      #bg-field {
+        position: absolute;
+        inset: 0;
+        background: #e1251b;
+      }
+      /* вращающиеся лучи (сцены s9–s10) */
+      #rays {
+        position: absolute;
+        left: -760px;
+        top: -340px;
+        width: 2600px;
+        height: 2600px;
+        opacity: 0;
+        border-radius: 50%;
+        background: repeating-conic-gradient(rgba(255, 255, 255, 0.13) 0deg 7.5deg, rgba(255, 255, 255, 0) 7.5deg 15deg);
+      }
+      /* окно спикера: во весь кадр ↔ круг ↔ экран телефона */
+      #spk {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+      }
+      #spk-in {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+      }
+      #aroll {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 1080px;
+        height: 1920px;
+        object-fit: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="44.8333" data-width="1080" data-height="1920">
+      <div id="bg-field"></div>
+      <div id="rays" data-layout-allow-overflow></div>
+      <div id="spk" data-layout-allow-overflow>
+        <div id="spk-in" data-layout-allow-overflow>
+          <video id="aroll" class="clip" src="assets/cut.mp4" data-start="0" data-duration="44.8333" data-track-index="0" muted playsinline></video>
+        </div>
+      </div>
+      <audio id="voice" src="assets/voice.wav" data-start="0" data-duration="44.8333" data-track-index="9" data-volume="1"></audio>
+
+      <div id="h-s1" data-clip="s1" data-composition-id="s1" data-composition-src="compositions/s1.html" data-start="0.0" data-duration="1.7667" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s2" data-clip="s2" data-composition-id="s2" data-composition-src="compositions/s2.html" data-start="1.7667" data-duration="2.2667" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s3" data-clip="s3" data-composition-id="s3" data-composition-src="compositions/s3.html" data-start="4.0333" data-duration="2.2333" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s4" data-clip="s4" data-composition-id="s4" data-composition-src="compositions/s4.html" data-start="6.2667" data-duration="4.9" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s5" data-clip="s5" data-composition-id="s5" data-composition-src="compositions/s5.html" data-start="11.1667" data-duration="5.1667" data-track-index="2" data-width="1080" data-height="1920"></div>
+      <div id="h-s6" data-clip="s6" data-composition-id="s6" data-composition-src="compositions/s6.html" data-start="16.3333" data-duration="5.5333" data-track-index="2" data-width="1080" data-height="1920"></div>
+
+      <div id="h-fs" data-clip="fs" data-composition-id="fs" data-composition-src="compositions/fs.html" data-start="23.7667" data-duration="1.5" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="h-s9" data-clip="s9" data-composition-id="s9" data-composition-src="compositions/s9.html" data-start="25.2667" data-duration="6.0" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="h-s10" data-clip="s10" data-composition-id="s10" data-composition-src="compositions/s10.html" data-start="31.2667" data-duration="4.2667" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="h-s11" data-clip="s11" data-composition-id="s11" data-composition-src="compositions/s11.html" data-start="35.5333" data-duration="5.2" data-track-index="3" data-width="1080" data-height="1920"></div>
+      <div id="h-s12" data-clip="s12" data-composition-id="s12" data-composition-src="compositions/s12.html" data-start="40.7333" data-duration="4.1" data-track-index="3" data-width="1080" data-height="1920"></div>
+
+      <div id="h-hud" data-clip="hud" data-composition-id="hud" data-composition-src="compositions/hud.html" data-start="0.0" data-duration="44.8333" data-track-index="4" data-width="1080" data-height="1920"></div>
+      <div id="h-captions" data-clip="captions" data-composition-id="captions" data-composition-src="compositions/captions.html" data-start="0.0" data-duration="44.8333" data-track-index="5" data-track-kind="captions" data-width="1080" data-height="1920"></div>
+    </div>
+    <script>
+      (() => {
+        /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 0;/*CUES:END*/
+        const tl = gsap.timeline({ paused: true });
+        // точка лица в исходнике (между глаз, чуть ниже — чтобы вошли волосы и плечи)
+        const FX = 510, FY = 740;
+        // круг: диаметр 440, вверху по центру, ниже HUD
+        const D = 440, S = 0.55;  // в круг входят волосы, лицо и плечи
+        const circle = { left: 320, top: 150, width: D, height: D, borderRadius: D / 2, autoAlpha: 1, scale: 1, y: 0,
+                         boxShadow: "0 0 0 10px #f3efe6, 0 28px 90px rgba(0,0,0,0.34)" };
+        const inCircle = { x: D / 2 - FX * S, y: D / 2 - FY * S, scale: S, transformOrigin: "0 0" };
+        const full = { left: 0, top: 0, width: 1080, height: 1920, borderRadius: 0, autoAlpha: 1, scale: 1, y: 0,
+                       boxShadow: "0 0 0 0px #f3efe6, 0 28px 90px rgba(0,0,0,0)" };
+        const inFull = { x: 0, y: 0, scale: 1, transformOrigin: "0 0" };
+        // экран телефона в сцене s9 (совпадает с #s9-screen)
+        const P = 0.64;
+        const phone = { left: 262, top: 402, width: 556, height: 1156, borderRadius: 56, autoAlpha: 1, scale: 1,
+                        boxShadow: "0 0 0 0px #f3efe6, 0 28px 90px rgba(0,0,0,0)" };
+        const inPhone = { x: 278 - FX * P, y: 430 - FY * P, scale: P, transformOrigin: "0 0" };
+        const BG = (c, t) => tl.set("#bg-field", { backgroundColor: c }, t);
+
+        tl.set("#spk", full, 0);
+        tl.set("#spk-in", inFull, 0);
+        tl.set("#rays", { opacity: 0, rotation: 0 }, 0);
+
+        // s2: лицо сжимается в круг, под ним красное поле
+        BG("#e1251b", C.s2In);
+        tl.to("#spk", { ...circle, duration: 0.4, ease: "power3.inOut" }, C.s2In);
+        tl.to("#spk-in", { ...inCircle, duration: 0.4, ease: "power3.inOut" }, C.s2In);
+        // s3: крем, круг остаётся
+        BG("#f3efe6", C.s3In);
+        // s4: только графика
+        BG("#e1251b", C.s4In);
+        tl.to("#spk", { scale: 0, autoAlpha: 0, duration: 0.22, ease: "back.in(2)", transformOrigin: "50% 50%" }, C.s4In);
+        // s5: круг возвращается, крем
+        BG("#f3efe6", C.s5In);
+        tl.fromTo("#spk", { scale: 0, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: "back.out(1.8)", immediateRender: false }, C.s5In + 0.05);
+        // s6: только графика, чёрное поле
+        BG("#141414", C.s6In);
+        tl.to("#spk", { scale: 0, autoAlpha: 0, duration: 0.22, ease: "back.in(2)" }, C.s6In);
+        // s7: лицо во весь кадр — жёсткий рез
+        tl.set("#spk", full, C.s7In);
+        tl.set("#spk-in", inFull, C.s7In);
+        // s9: пока кадр закрыт полем fs, спикер встаёт в экран телефона и въезжает вместе с ним
+        BG("#e1251b", C.s9In - 0.3);
+        tl.set("#rays", { opacity: 1 }, C.s9In - 0.3);
+        tl.set("#spk", { ...phone, y: 1500 }, C.s9In - 0.3);
+        tl.set("#spk-in", inPhone, C.s9In - 0.3);
+        tl.to("#spk", { y: 0, duration: 0.55, ease: "power3.out" }, C.s9In + 0.05);
+        tl.set("#spk", { autoAlpha: 0 }, C.tgGo + 0.4);
+        // лучи крутятся всю сцену s9–s10
+        tl.fromTo("#rays", { rotation: 0 }, { rotation: 60, duration: C.s11In - C.s9In + 0.3, ease: "none", immediateRender: false }, C.s9In - 0.3);
+        // s10: фиолетовое поле
+        BG("#9b7bff", C.s10In);
+        // s11: лицо во весь кадр
+        tl.set("#rays", { opacity: 0 }, C.s11In);
+        tl.set("#spk", full, C.s11In);
+        tl.set("#spk-in", inFull, C.s11In);
+        // s12: энд-кард закрывает кадр полем, спикер прячется под ним
+        BG("#e1251b", C.s12In + 0.5);
+        tl.set("#spk", { autoAlpha: 0 }, C.s12In + 0.5);
+        window.__timelines["main"] = tl;
+      })();
+    </script>
+  </body>
+</html>

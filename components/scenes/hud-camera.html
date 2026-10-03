@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+  <head><meta charset="UTF-8" /></head>
+  <body>
+    <template>
+      <link rel="stylesheet" href="styles-promo.css" />
+      <style>
+        @font-face { font-family: "Unbounded"; src: url("assets/fonts/Unbounded.ttf") format("truetype"); font-weight: 200 900; }
+        #hud-root { position: absolute; inset: 0; }
+        #hud-blend { position: absolute; inset: 0; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.25); font-family: "Unbounded", system-ui, sans-serif; font-weight: 600; font-size: 26px; letter-spacing: 0.04em; }
+        .hud-c { position: absolute; width: 64px; height: 64px; border-color: currentColor; border-style: solid; border-width: 0; }
+        #hud-tl { left: 40px; top: 40px; border-top-width: 5px; border-left-width: 5px; }
+        #hud-tr { right: 40px; top: 40px; border-top-width: 5px; border-right-width: 5px; }
+        #hud-bl { left: 40px; bottom: 40px; border-bottom-width: 5px; border-left-width: 5px; }
+        #hud-br { right: 40px; bottom: 40px; border-bottom-width: 5px; border-right-width: 5px; }
+        .hud-t { position: absolute; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
+        #hud-rec { left: 112px; top: 70px; }
+        #hud-dot { position: absolute; left: 78px; top: 76px; width: 22px; height: 22px; border-radius: 50%; background: #e1251b; box-shadow: 0 0 0 3px rgba(255,255,255,0.85); }
+        .hud-n { position: absolute; left: 0; top: 0; visibility: hidden; }
+        #hud-nbox { position: relative; display: inline-block; width: 44px; height: 30px; }
+        #hud-take { right: 76px; top: 70px; }
+        #hud-tc { left: 76px; bottom: 70px; }
+        #hud-fmt { right: 76px; bottom: 70px; }
+      </style>
+      <div id="hud-root" data-composition-id="hud" data-width="1080" data-height="1920">
+        <div id="hud-blend">
+        <div class="hud-c" id="hud-tl"></div><div class="hud-c" id="hud-tr"></div>
+        <div class="hud-c" id="hud-bl"></div><div class="hud-c" id="hud-br"></div>
+        <div class="hud-t" id="hud-rec">REC</div>
+        <div class="hud-t" id="hud-take">ДУБЛЬ <span id="hud-nbox"><span class="hud-n" id="hud-n1">01</span><span class="hud-n" id="hud-n2">02</span><span class="hud-n" id="hud-n3">03</span><span class="hud-n" id="hud-n4">04</span><span class="hud-n" id="hud-n5">05</span><span class="hud-n" id="hud-n6">06</span><span class="hud-n" id="hud-n7">07</span><span class="hud-n" id="hud-n8">08</span><span class="hud-n" id="hud-n9">09</span><span class="hud-n" id="hud-n10">10</span><span class="hud-n" id="hud-n11">11</span><span class="hud-n" id="hud-n12">12</span></span></div>
+        <div class="hud-t" id="hud-tc">00:00:00</div>
+        <div class="hud-t" id="hud-fmt">1080×1920 · 30</div>
+        </div>
+        <div id="hud-dot"></div>
+      </div>
+      <script>
+        (() => {
+          /*CUES:BEGIN*/const C = {"zero": 0.0, "end": 44.8333, "s1Rolik": 0.2333, "s1Neuro": 1.1333, "s2In": 1.7667, "s2Sell": 2.7667, "s2Strike": 3.3667, "s3In": 4.0333, "s3Give": 4.5667, "s3Free": 5.6667, "s4In": 6.2667, "s4Two": 6.8667, "s4Folder": 8.3, "s4Edit": 9.8, "s5In": 11.1667, "s5Hdr": 11.3333, "k1": 12.9333, "k2": 13.3333, "k3": 14.0, "k4": 15.4333, "s6In": 16.3333, "t1": 17.2667, "t2": 18.4, "t3": 19.2, "t4": 19.5333, "t5": 19.8667, "t6": 20.3667, "s7In": 21.8667, "fsIn": 23.7667, "fsTwo": 24.4333, "fsDays": 24.6333, "s9In": 25.2667, "igSub": 26.7333, "tgGo": 27.9667, "tgSub": 30.4, "s10In": 31.2667, "s10Free": 32.5667, "s10Doc": 33.1333, "s10File": 34.8333, "s11In": 35.5333, "s11Ls": 38.3667, "s11Send": 38.6333, "s12In": 40.7333, "s12Write": 41.2667, "s12Kiki": 42.0667, "endIn": 43.1667}; const T0 = 0.0;/*CUES:END*/
+          const tl = gsap.timeline({ paused: true });
+          const END = C.end - T0;
+          // «●» мигает раз в секунду (цвет инвертируется blend-режимом в красный)
+          for (let t = 0; t < END; t += 1) {
+            tl.set("#hud-dot", { opacity: 1 }, t);
+            tl.set("#hud-dot", { opacity: 0.15 }, t + 0.5);
+          }
+          // номер дубля меняется на каждой сцене
+          const K = ["s2In", "s3In", "s4In", "s5In", "s6In", "s7In", "fsIn", "s9In", "s10In", "s11In", "s12In"];
+          tl.set("#hud-n1", { visibility: "visible" }, 0);
+          K.forEach((k, i) => {
+            tl.set("#hud-n" + (i + 1), { visibility: "hidden" }, C[k] - T0);
+            tl.set("#hud-n" + (i + 2), { visibility: "visible" }, C[k] - T0);
+          });
+          // на кремовых сценах HUD тёмный, на остальных белый
+          [["s3In", "s4In"], ["s5In", "s6In"]].forEach(([a, b]) => {
+            tl.set("#hud-blend", { color: "#141414", textShadow: "none" }, C[a] - T0);
+            tl.set("#hud-blend", { color: "#ffffff", textShadow: "0 1px 6px rgba(0,0,0,0.25)" }, C[b] - T0);
+          });
+          // таймкод сек:кадр
+          const tc = document.querySelector("#hud-tc");
+          const o = { f: 0 };
+          tl.fromTo(o, { f: 0 }, { f: END * 30, duration: END, ease: "none", onUpdate: () => {
+            const f = Math.floor(o.f), s = Math.floor(f / 30);
+            tc.textContent = "00:" + String(s).padStart(2, "0") + ":" + String(f % 30).padStart(2, "0");
+          } }, 0);
+          window.__timelines["hud"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
